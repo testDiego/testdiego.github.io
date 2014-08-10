@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Cortex-m0 | Diego Blog]]></title>
+  <link href="http://testDiego.github.io/blog/categories/cortex-m0/atom.xml" rel="self"/>
+  <link href="http://testDiego.github.io/"/>
+  <updated>2014-08-09T22:18:53-07:00</updated>
+  <id>http://testDiego.github.io/</id>
+  <author>
+    <name><![CDATA[Diego]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Primer Programa CMSIS]]></title>
+    <link href="http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis/"/>
+    <updated>2014-08-08T13:07:34-07:00</updated>
+    <id>http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis</id>
+    <content type="html"><![CDATA[<p>En el post <a href="">Primer Programa Bare Board</a> aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( <em>excepto el startup y el linker file</em> ). En esta ocasión usaremos la definición de registros acorde al estándar <strong>CMSIS</strong>.</p>
+
+<p><strong>CMSIS</strong> nos ayudará a acceder a los registros del micro de una forma más cómoda y organizada, además es un estándar difundido entre los fabricantes de micros con CPUs <strong>ARM</strong>,</p>
+
+<p>Creamos una nueva carpeta para nuestro proyecto con <strong>CMSIS</strong>
+<code>
+$ mkdir ~/test_f072_CMSIS
+</code></p>
+
+<p>De nueva cuenta deberás copiar a la carpeta de tu proyecto el archivo linker. Recuerda lo obtienes de la librería de ST en la siguiente ruta
+<code>
+STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/TrueSTUDIO/STM32F072RB-Nucleo/STM32F072RB_FLASH.ld
+</code></p>
+
+<!--more-->
+
+
+<p>Crea una nueva carpeta en tu proyecto llamada <strong>system</strong> en la cual colocaremos los archivos CMSIS
+<code>
+$ mkdir ~/test_f072_CMSIS/system
+</code></p>
+
+<p>Copia en esta nueva carpeta los siguientes archivos, los cuales los encontrarás en la librería de ST en la siguientes rutas
+<code>
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/startup_stm32f072xb.s
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/system_stm32f0xx.c
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f072xb.h
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/arm_math.h
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cm0.h
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cmFunc.h
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cmInstr.h
+</code></p>
+
+<p>Antes de seguir avanzando, aclararemos que el archivo <strong>startup</strong> no le haremos ninguna modificación y que los archivos <strong>system</strong> nos permiten inicializar algunas pequeñas cosas del micro, como los relojes de las memorias.</p>
+
+<p>Bien, creamos nuestra carpeta <strong>Output</strong> donde guardaremos los archivos que nos arroja la compilación
+<code>
+$ mkdir test_f072_CMSIS/Output
+</code></p>
+
+<p>Creamos el archivo que contendrá nuestro código magico =).
+<code>
+$ touch ~/test_f072_CMSIS/main.c
+</code></p>
+
+<p>Abrimos con nuestro editor de texto favorito el archivo <strong>main.c</strong> y escribimos el siguiente código
+<figure class='code'><figcaption><span>Hola Mundo CMSIS - main.c </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">include</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">stm32f072xb</span><span class="p">.</span><span class="n">h</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">LED_PIN</span> <span class="mi">5</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kt">int</span> <span class="n">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">i</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="cm">/* Enable GPIOA clock */</span>
+</span><span class='line'><span class="n">RCC</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">AHBENR</span> <span class="o">|=</span> <span class="n">RCC_AHBENR_GPIOAEN</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/* Configure GPIOA pin 5 as output */</span>
+</span><span class='line'><span class="n">GPIOA</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">MODER</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'><span class="cm">/* Configure GPIOA pin 5 in max speed */</span>
+</span><span class='line'><span class="n">GPIOA</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">OSPEEDR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span><span class="p">(;;)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="cm">/* Toggle pin 5 from port A */</span>
+</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&amp;</span><span class="n">gt</span><span class="p">;</span><span class="n">ODR</span> <span class="o">^=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">LED_PIN</span><span class="p">);</span>
+</span><span class='line'>    <span class="cm">/* simple and practical delay */</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="mi">300000</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>El anterior programa hará parpadear el led de la tarjeta conectado al <strong>puerto A pin 5</strong>. A diferencia del anterior post en este código no usamos las direcciones de los registros directamente, sino que usamos la definición de registros, lo cual es mucho más práctico.</p>
+
+<p>Estos registros los encuentras definidos en el archivo <strong>stm32f072xb.h</strong>. Las definiciones son simples punteros a estructuras y esto es así porque lo dicta el estándar CMSIS <code>[Periferico]-&gt;[registro]</code>.</p>
+
+<p>Solo nos falta crear el archivo makefile para que make realice la compilación.
+<code>
+$ mkdir test_f072_CMSIS/makefile
+</code></p>
+
+<p>Abre el archivo en tu editor de texto y escribe el siguiente código. Recuerda usar TABs y no espacios para las indentación.
+<figure class='code'><figcaption><span>makefile </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='makefile'><span class='line'><span class="nv">PROJECT</span> <span class="o">=</span> <span class="nb">test</span>  <span class="c">#Nombre que desees para tu proyecto&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o system_stm32f0xx.o <span class="c">#archivos a compilar&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">VPATH</span> <span class="o">=</span> system <span class="c">#directorio con archivos a compilar (&lt;em&gt;.c, &lt;/em&gt;.s)&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">INCLUDES</span> <span class="o">=</span> -I system <span class="c">#directorio con archivos headers (*.h)&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;h1&gt;Apartir</span> <span class="err">de</span> <span class="err">aqui</span> <span class="err">no</span> <span class="err">modifiques</span> <span class="err">nada</span> <span class="err">a</span> <span class="err">menos</span> <span class="err">que</span> <span class="err">sepas</span> <span class="err">lo</span> <span class="err">que</span> <span class="err">hases.</span> <span class="err">;)&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">LINKERFILE</span> <span class="o">=</span> STM32F072RB_FLASH.ld <span class="c"># linker script a usar</span>
+</span><span class='line'><span class="nv">CPU</span> <span class="o">=</span> -mcpu<span class="o">=</span>cortex-m0 -mthumb -mlittle-endian&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">AS</span> <span class="o">=</span> arm-none-eabi-as
+</span><span class='line'><span class="nv">CC</span> <span class="o">=</span> arm-none-eabi-gcc
+</span><span class='line'><span class="nv">LD</span> <span class="o">=</span> arm-none-eabi-gcc
+</span><span class='line'><span class="nv">OD</span> <span class="o">=</span> arm-none-eabi-objdump
+</span><span class='line'><span class="nv">OC</span> <span class="o">=</span> arm-none-eabi-objcopy&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">CCFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span> <span class="k">$(</span>INCLUDES<span class="k">)</span> -Wall -fno-common -O0 -fomit-frame-pointer -Wstrict-prototypes -fverbose-asm
+</span><span class='line'><span class="nv">ASFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span>
+</span><span class='line'><span class="nv">LDFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span> -Wl,<span class="p">&amp;</span>ndash<span class="p">;</span>gc-sections
+</span><span class='line'><span class="nv">OCFLAGS</span> <span class="o">=</span> -Oihex
+</span><span class='line'><span class="nv">ODFLAGS</span> <span class="o">=</span> -S&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;all </span><span class="o">:</span> <span class="n">test</span>&lt;/<span class="n">p</span>&gt;
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;test </span><span class="o">:</span> <span class="k">$(</span><span class="nv">PROJECT</span><span class="k">)</span>.<span class="n">elf</span>
+</span><span class='line'>    <span class="k">$(</span>OC<span class="k">)</span> <span class="k">$(</span>OCFLAGS<span class="k">)</span> <span class="k">$(</span>PROJECT<span class="k">)</span>.elf <span class="k">$(</span>PROJECT<span class="k">)</span>.hex
+</span><span class='line'>    <span class="k">$(</span>OD<span class="k">)</span> <span class="k">$(</span>ODFLAGS<span class="k">)</span> <span class="k">$(</span>PROJECT<span class="k">)</span>.elf &gt; <span class="k">$(</span>PROJECT<span class="k">)</span>.lst
+</span><span class='line'>    mv &lt;em&gt;.o &lt;/em&gt;.elf &lt;em&gt;.hex &lt;/em&gt;.lst Output&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;$(PROJECT).elf </span><span class="o">:</span> <span class="k">$(</span><span class="nv">FILES</span><span class="k">)</span>
+</span><span class='line'>    <span class="k">$(</span>LD<span class="k">)</span> <span class="k">$(</span>LDFLAGS<span class="k">)</span> -T<span class="k">$(</span>LINKERFILE<span class="k">)</span> -o <span class="nv">$@</span> <span class="nv">$^</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;h1&gt;Compile</span> <span class="err">C</span> <span class="err">source</span> <span class="err">files&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;%.o </span><span class="o">:</span> %.<span class="n">c</span>
+</span><span class='line'>    <span class="k">$(</span>CC<span class="k">)</span> <span class="k">$(</span>CCFLAGS<span class="k">)</span> -c -g -o <span class="nv">$@</span> <span class="nv">$^</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;h1&gt;Compile</span> <span class="err">ASM</span> <span class="err">files&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;%.o </span><span class="o">:</span> %.<span class="n">s</span>
+</span><span class='line'>    <span class="k">$(</span>AS<span class="k">)</span> <span class="k">$(</span>ASFLAGS<span class="k">)</span> -o <span class="nv">$@</span> <span class="nv">$^</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;clean </span><span class="o">:</span>
+</span><span class='line'>    rm Output/&lt;em&gt;.&lt;/em&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>En esta ocasión compilamos tres archivos fuente y tenemos un subfolder el cual hay que indicarle al compilador.</p>
+
+<p>A compilar se ha dicho
+<code>
+$ cd ~/test_f072_CMSIS
+$ make
+</code></p>
+
+<p>Si la terminal no arrojo ningun error deberemos tener nuestro archivo <strong>test.hex</strong> en la carpeta Output</p>
+
+<h2>A Programar se ha dicho</h2>
+
+<p>Abre una nueva terminal y conéctate con tu tarjeta usando OpenOCD
+<code>
+$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
+</code></p>
+
+<p>En la terminal anterior mandaremos nuestro programa compilado a nuestra tarjeta usando <strong>telnet</strong>, conéctate al puerto 4444 de la siguiente manera
+<code>
+$ telnet localhost 4444
+</code></p>
+
+<p>Si te acepta la coneccion, solo resta mandar el archivo .hex, escribe los siguientes comandos en orden
+<code>
+reset halt
+flash write_image erase test.hex
+reset run
+</code></p>
+
+<p>El primer comando resetea y detiene al micro, el segundo manda el programa y lo escribe en la memoria y el último lo resetea y pone a correr el programa, asi que ya podras ver un feliz led parpadeando.</p>
+
+<h2>Conclusion</h2>
+
+<p>Incluir los archivos que nos indica el estándar <strong>CMSIS</strong> nos facilita la interacción con los registros del sistema, pero eso no es lo unico ya que tambien nos permitira de una forma mas sencilla llamar las funciones de interrupción y controlar los registros internos del CPU.</p>
+
+<p>Lo único que no nos exenta es el hecho de configurar los periféricos del micro de manera manual sin la ayuda de ningún framework o librería.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Primer Programa (Bare Board)]]></title>
+    <link href="http://testDiego.github.io/blog/2014/08/06/primer-programa-bare-board/"/>
+    <updated>2014-08-06T16:17:22-07:00</updated>
+    <id>http://testDiego.github.io/blog/2014/08/06/primer-programa-bare-board</id>
+    <content type="html"><![CDATA[<p>Con nuestro compilador instalado y <strong>OpenOCD</strong> listo para comunicarse con nuestra tarjeta <strong>Nucleo-F072RB</strong>, llego la hora de crear nuestro programa <em>hola mundo</em>. Antes que nada aclararemos que no usaremos ningun IDE en especifico, para escribir el codigo usaremos cualquier editor de texto plano ( <em>te recomiendo Sublime Text</em> ) y la compilacion la realizaremos usando archivos <strong>makefiles</strong> y la <strong>terminal</strong>.</p>
+
+<p>El programa lo realizaremos sin el uso de ninguna libreria de funciones ( <em>just balls!!!</em> ), pero si nesecitaremos un par de archivos de apoyo y los optendremos de la libreria oficial <a href="http://www.st.com/web/en/catalog/tools/PF260612"><strong>STM32F0Cube</strong></a> de ST. Descarga el archivo y descomprimelo en tu lugar favorito de la computadora =).</p>
+
+<p>Crea una carpeta donde estara tu flamante y nuevo programa de prueba
+<code>
+$ mkdir ~/test_f072
+$ cd ~/test_f072
+</code></p>
+
+<p>Copia a la carpeta de tu proyecto el archivo <strong>linker</strong>, el cual permitira a tu programa saber como esta ordenada la memoria del micro. El archivo se encuentra en la libreria de <strong>ST</strong> en la siguiente ruta:
+<code>
+STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/TrueSTUDIO/STM32F072RB-Nucleo/STM32F072RB_FLASH.ld
+</code></p>
+
+<!--more-->
+
+
+<p>Copia a la carpeta de tu proyecto el archivo <strong>startup</strong> el cual permitira a tu programa entre otras cosas iniciar desde el vector de reset, setear el valor del stack pointer y acomodar la tabla de vectores de interrupciones del micro. EL archivo se encuentra en la libreria de <strong>ST</strong> en la siguiente ruta:
+<code>
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/startup_stm32f072xb.s
+</code></p>
+
+<p>Habra que hacer una pequeña modificacion al archivo de <strong>startup_stm32f072xb.s</strong> para que no nos de problema con una funcion que manda llamar ( <em>y que por lo pronto no tenemos</em> ). Abre con tu editor favorito el archivo y comenta la linea numero <strong>101</strong>. <em>Al archivo le deberas quitar la proteccion contra escritura para realizar lo anterior</em>.
+<figure class='code'><figcaption><span>startup_stm32f072xb.s </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='gas'><span class='line'><span class="err">100</span> <span class="err">/&lt;</span><span class="nf">em</span><span class="err">&gt;</span> <span class="no">Call</span> <span class="no">the</span> <span class="no">clock</span> <span class="no">system</span> <span class="no">intitialization</span> <span class="no">function.</span><span class="err">&lt;/</span><span class="no">em</span><span class="err">&gt;/</span>
+</span><span class='line'><span class="err">101</span>    <span class="err">//</span><span class="nf">bl</span>  <span class="no">SystemInit</span>
+</span><span class='line'><span class="err">102</span> <span class="err">/&lt;</span><span class="nf">em</span><span class="err">&gt;</span> <span class="no">Call</span> <span class="no">static</span> <span class="no">constructors</span> <span class="err">&lt;/</span><span class="no">em</span><span class="err">&gt;/</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>En el directorio de tu proyecto crea una carpeta a la que llamaremos <strong>Output</strong> y sera la carpeta en la que dejaremos los archivos producidos por la compilacion
+<code>
+$ mkdir ~/test_f072/Output
+</code></p>
+
+<p>Bien hora de la accion, crea un nuevo archivo al que llamremos <strong>main.c</strong> y que contendra nuestro codigo
+<code>
+$ touch ~/test_f072/main.c
+</code></p>
+
+<h2>Escribiendo el codigo</h2>
+
+<p>Habre el archivo con tu editor de texto favorito ( <em>como Gedit</em> ) y escribe el siguiente codigo
+<figure class='code'><figcaption><span>Hola Mundo - main.c </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">define</span> <span class="n">LED_PIN</span> <span class="mi">5</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kt">int</span> <span class="n">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">i</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="cm">/* Enable clock for GPIO port A */</span>
+</span><span class='line'><span class="o">*</span><span class="p">((</span><span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="mh">0x40021014</span><span class="p">)</span> <span class="o">|=</span> <span class="mh">0x00020000</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/* Configure GPIOA pin 5 as output */</span>
+</span><span class='line'><span class="o">*</span><span class="p">((</span><span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="mh">0x48000000</span><span class="p">)</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'><span class="cm">/* Configure GPIOA pin 5 in max speed */</span>
+</span><span class='line'><span class="o">*</span><span class="p">((</span><span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="mh">0x48000008</span><span class="p">)</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span><span class="p">(;;)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="cm">/* Toggle pin 5 from port A */</span>
+</span><span class='line'>    <span class="o">*</span><span class="p">((</span><span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span><span class="o">*</span><span class="p">)</span><span class="mh">0x48000014</span><span class="p">)</span> <span class="o">^=</span><span class="p">(</span><span class="mi">1</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">LED_PIN</span><span class="p">);</span>
+</span><span class='line'>    <span class="cm">/* simple and practical delay */</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="mi">100000</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>El anterior codigo solo hara parpadear el led conectado al <strong>puerto A pin 5</strong>, el cual esta presente en la tarjeta. Y te estaras preguntando que son todos esos numeros??, pues son las direcciones en las que se encuntran los registros que deberemos manipular para interactuar con el <strong>pin A5</strong>. Esta informcaion la optienes de la hoja de datos del micro.</p>
+
+<p>Hora de compilar nuestro programa. La compilacion la realizaremos usando un archivo <strong>makefile</strong> el cual concentrara las ordenes de compilacion que le pasaremos a nuestro toolchain.</p>
+
+<p>Crea un nuevo archivo llamado makefile en la carpeta de tu proeycto
+<code>
+$ touch ~/test_f072/makefile
+</code></p>
+
+<p>Habre este nuevo archivo con tu editor de texto favorito ( <em>digamos atom</em> ) y escribe lo siguiente
+<figure class='code'><figcaption><span>makefile </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='makefile'><span class='line'><span class="nv">PROJECT</span> <span class="o">=</span> <span class="nb">test</span>  <span class="c">#Nombre que desees para tu proyecto&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o <span class="c">#archivos fuente a compilar&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;h1&gt;Apartir</span> <span class="err">de</span> <span class="err">aqui</span> <span class="err">no</span> <span class="err">modifiques</span> <span class="err">nada</span> <span class="err">a</span> <span class="err">menos</span> <span class="err">que</span> <span class="err">sepas</span> <span class="err">lo</span> <span class="err">que</span> <span class="err">hases.</span> <span class="err">;)&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">LINKERFILE</span> <span class="o">=</span> STM32F072RB_FLASH.ld <span class="c"># linker script a usar</span>
+</span><span class='line'><span class="nv">CPU</span> <span class="o">=</span> -mcpu<span class="o">=</span>cortex-m0 -mthumb -mlittle-endian&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">AS</span> <span class="o">=</span> arm-none-eabi-as
+</span><span class='line'><span class="nv">CC</span> <span class="o">=</span> arm-none-eabi-gcc
+</span><span class='line'><span class="nv">LD</span> <span class="o">=</span> arm-none-eabi-gcc
+</span><span class='line'><span class="nv">OD</span> <span class="o">=</span> arm-none-eabi-objdump
+</span><span class='line'><span class="nv">OC</span> <span class="o">=</span> arm-none-eabi-objcopy&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span><span class="nv">CCFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span> -Wall -fno-common -O0 -fomit-frame-pointer -Wstrict-prototypes -fverbose-asm
+</span><span class='line'><span class="nv">ASFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span>
+</span><span class='line'><span class="nv">LDFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span> -Wl,<span class="p">&amp;</span>ndash<span class="p">;</span>gc-sections
+</span><span class='line'><span class="nv">OCFLAGS</span> <span class="o">=</span> -Oihex
+</span><span class='line'><span class="nv">ODFLAGS</span> <span class="o">=</span> -S&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;all </span><span class="o">:</span> <span class="n">test</span>&lt;/<span class="n">p</span>&gt;
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;test </span><span class="o">:</span> <span class="k">$(</span><span class="nv">PROJECT</span><span class="k">)</span>.<span class="n">elf</span>
+</span><span class='line'>    <span class="k">$(</span>OC<span class="k">)</span> <span class="k">$(</span>OCFLAGS<span class="k">)</span> <span class="k">$(</span>PROJECT<span class="k">)</span>.elf <span class="k">$(</span>PROJECT<span class="k">)</span>.hex
+</span><span class='line'>    <span class="k">$(</span>OD<span class="k">)</span> <span class="k">$(</span>ODFLAGS<span class="k">)</span> <span class="k">$(</span>PROJECT<span class="k">)</span>.elf &gt; <span class="k">$(</span>PROJECT<span class="k">)</span>.lst
+</span><span class='line'>    mv &lt;em&gt;.o &lt;/em&gt;.elf &lt;em&gt;.hex &lt;/em&gt;.lst Output&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;$(PROJECT).elf </span><span class="o">:</span> <span class="k">$(</span><span class="nv">FILES</span><span class="k">)</span>
+</span><span class='line'>    <span class="k">$(</span>LD<span class="k">)</span> <span class="k">$(</span>LDFLAGS<span class="k">)</span> -T<span class="k">$(</span>LINKERFILE<span class="k">)</span> -o <span class="nv">$@</span> <span class="nv">$^</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;h1&gt;Compile</span> <span class="err">C</span> <span class="err">source</span> <span class="err">files&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;%.o </span><span class="o">:</span> %.<span class="n">c</span>
+</span><span class='line'>    <span class="k">$(</span>CC<span class="k">)</span> <span class="k">$(</span>CCFLAGS<span class="k">)</span> -c -g -o <span class="nv">$@</span> <span class="nv">$^</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;h1&gt;Compile</span> <span class="err">ASM</span> <span class="err">files&lt;/h1&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;%.o </span><span class="o">:</span> %.<span class="n">s</span>
+</span><span class='line'>    <span class="k">$(</span>AS<span class="k">)</span> <span class="k">$(</span>ASFLAGS<span class="k">)</span> -o <span class="nv">$@</span> <span class="nv">$^</span>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="nf">&lt;p&gt;clean </span><span class="o">:</span>
+</span><span class='line'>    rm Output/&lt;em&gt;.&lt;/em&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'><span class="err">&lt;p&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>No te apures si no sabes nada de <strong>makefiles</strong>, dentro de poco posteare un par de tutoriales. Otra cosa muy importante cuando escribes lo anterior usa <strong>TABS</strong> en la identacion y no espacios, o tendras errores.</p>
+
+<p>Uff!!. Hora de compilar, solo escribe <strong>make</strong> en tu terminal, recuerda estar en la carpeta de tu proyecto
+<code>
+$ cd ~/test_f072
+$ make
+</code></p>
+
+<p>Si la terminal no te arrojo ningun error de compilacion deberas tener un archivo <strong>test.hex</strong> en tu folder <strong>Output</strong>, anda ve y revisa, porque hay que programar la tarjeta</p>
+
+<h2>A Programar se ha dicho</h2>
+
+<p>Habre una nueva terminal y conectate con tu tarjeta usando OpenOCD
+<code>
+$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
+</code></p>
+
+<p>En la terminal anterior madaremos nuestro programa compilado a nuestra tarjeta usando <strong>telnet</strong>, conectate al puerto <strong>4444</strong> de la siguiente manera
+<code>
+$ telnet localhost 4444
+</code></p>
+
+<p>Si te acepta la coneccion, solo restara mandar el archivo <strong>.hex</strong>. Escribe los siguientes comandos en orden
+<code>
+reset halt
+flash write_image erase test.hex
+reset run
+</code></p>
+
+<p>El primer comando resetea y detiene al micro, el segundo manda el programa y lo escribe en la memoria y el ultimo lo resetea y pone a correr el programa, asi que ya podras ver un feliz led parpadeando.</p>
+
+<p>Esta manera de programar ( <em>sin ayuda alguna</em> ) te obligara a leer bien la hoja de datos del micro y en consecuencia aprenderas muy bien a utilizar la maquina que estas usando, pero te costara buenas desveladas y canas verdes.</p>
+]]></content>
+  </entry>
+  
+</feed>

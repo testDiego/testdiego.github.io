@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Primer Programa CMSIS - Diego Blog</title>
+  <meta name="author" content="Diego">
+
+  
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis">
+  <link href="/favicon.png" type="image/png" rel="icon">
+  <link href="/atom.xml" rel="alternate" title="Diego Blog" type="application/atom+xml">
+
+  <script src="/javascripts/libs/jquery/jquery-2.0.3.min.js"></script>
+
+<link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/assets/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet" type="text/css">
+
+
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+  <body   >
+    <div id="wrap">
+      <header role="banner">
+        <nav class="navbar navbar-default" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Diego Blog</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a rel="index" href="/">Blog</a>
+                </li>
+                <li >
+                    <a href="/blog/archives">Archives</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="subscribe-rss" href="/atom.xml" title="subscribe via RSS">
+                        <span class="visible-xs">RSS</span>
+                        <img class="hidden-xs" src="/images/rss.png" alt="RSS">
+                    </a>
+                </li>
+                
+            </ul>
+            
+                <form class="search navbar-form navbar-right" action="https://www.google.com/search" method="GET">
+                    <input type="hidden" name="q" value="site:testDiego.github.io">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="q" placeholder="Search">
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</nav>
+
+
+      </header>
+      <div id="main" class="container">
+        <div id="content">
+          <div class="row">
+  <div class="page-content col-md-9" itemscope itemtype="http://schema.org/Blog">
+    <meta itemprop="name" content="Diego Blog" />
+    <meta itemprop="description" content="Este sencillo blog estara dedicado a micros ARM mas concretamente del fabricante ST" />
+    <meta itemprop="url" content="http://testDiego.github.io" />
+    <article class="hentry" role="article" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-08T13:07:34-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 8<sup>th</sup>, 2014</time>
+        
+           | <a href="#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io">Comments</a>
+        
+      </p>
+    
+    
+    <h1 class="entry-title" itemprop="name headline">
+        Primer Programa CMSIS
+        
+    </h1>
+    
+  </header>
+
+
+<div class="entry-content clearfix" itemprop="articleBody"><p>En el post <a href="">Primer Programa Bare Board</a> aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( <em>excepto el startup y el linker file</em> ). En esta ocasión usaremos la definición de registros acorde al estándar <strong>CMSIS</strong>.</p>
+
+<p><strong>CMSIS</strong> nos ayudará a acceder a los registros del micro de una forma más cómoda y organizada, además es un estándar difundido entre los fabricantes de micros con CPUs <strong>ARM</strong>,</p>
+
+<p>Creamos una nueva carpeta para nuestro proyecto con <strong>CMSIS</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_f072_CMSIS</span></code></pre></td></tr></table></div></figure>
+
+
+<p>De nueva cuenta deberás copiar a la carpeta de tu proyecto el archivo linker. Recuerda lo obtienes de la librería de ST en la siguiente ruta</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/TrueSTUDIO/STM32F072RB-Nucleo/STM32F072RB_FLASH.ld</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<p>Crea una nueva carpeta en tu proyecto llamada <strong>system</strong> en la cual colocaremos los archivos CMSIS</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_f072_CMSIS/system</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Copia en esta nueva carpeta los siguientes archivos, los cuales los encontrarás en la librería de ST en la siguientes rutas</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/startup_stm32f072xb.s
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/system_stm32f0xx.c
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Include/stm32f072xb.h
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Include/system_stm32f0xx.h
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/arm_math.h
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cm0.h
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cmFunc.h
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cmInstr.h</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Antes de seguir avanzando, aclararemos que el archivo <strong>startup</strong> no le haremos ninguna modificación y que los archivos <strong>system</strong> nos permiten inicializar algunas pequeñas cosas del micro, como los relojes de las memorias.</p>
+
+<p>Bien, creamos nuestra carpeta <strong>Output</strong> donde guardaremos los archivos que nos arroja la compilación</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir test_f072_CMSIS/Output</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Creamos el archivo que contendrá nuestro código magico =).</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ touch ~/test_f072_CMSIS/main.c</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Abrimos con nuestro editor de texto favorito el archivo <strong>main.c</strong> y escribimos el siguiente código</p>
+
+<figure class='code'><figcaption><span>Hola Mundo CMSIS - main.c </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define LED_PIN 5</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/* Enable GPIOA clock */</span>
+</span><span class='line'>    <span class="n">RCC</span><span class="o">-&gt;</span><span class="n">AHBENR</span> <span class="o">|=</span> <span class="n">RCC_AHBENR_GPIOAEN</span><span class="p">;</span>
+</span><span class='line'>    <span class="cm">/* Configure GPIOA pin 5 as output */</span>
+</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">MODER</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>    <span class="cm">/* Configure GPIOA pin 5 in max speed */</span>
+</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">OSPEEDR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span><span class="p">(;;)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/* Toggle pin 5 from port A */</span>
+</span><span class='line'>        <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">ODR</span> <span class="o">^=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">LED_PIN</span><span class="p">);</span>
+</span><span class='line'>        <span class="cm">/* simple and practical delay */</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">300000</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>El anterior programa hará parpadear el led de la tarjeta conectado al <strong>puerto A pin 5</strong>. A diferencia del anterior post en este código no usamos las direcciones de los registros directamente, sino que usamos la definición de registros, lo cual es mucho más práctico.</p>
+
+<p>Estos registros los encuentras definidos en el archivo <strong>stm32f072xb.h</strong>. Las definiciones son simples punteros a estructuras y esto es así porque lo dicta el estándar CMSIS <code>[Periferico]-&gt;[registro]</code>.</p>
+
+<p>Solo nos falta crear el archivo makefile para que make realice la compilación.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir test_f072_CMSIS/makefile</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Abre el archivo en tu editor de texto y escribe el siguiente código. Recuerda usar TABs y no espacios para las indentación.</p>
+
+<figure class='code'><figcaption><span>makefile </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='makefile'><span class='line'><span class="nv">PROJECT</span> <span class="o">=</span> <span class="nb">test</span>  <span class="c">#Nombre que desees para tu proyecto</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o system_stm32f0xx.o <span class="c">#archivos a compilar</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">VPATH</span> <span class="o">=</span> system <span class="c">#directorio con archivos a compilar (*.c, *.s)</span>
+</span><span class='line'>
+</span><span class='line'><span class="nv">INCLUDES</span> <span class="o">=</span> -I system <span class="c">#directorio con archivos headers (*.h)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Apartir de aqui no modifiques nada a menos que sepas lo que hases. ;)</span>
+</span><span class='line'><span class="nv">LINKERFILE</span> <span class="o">=</span> STM32F072RB_FLASH.ld <span class="c"># linker script a usar</span>
+</span><span class='line'><span class="nv">CPU</span> <span class="o">=</span> -mcpu<span class="o">=</span>cortex-m0 -mthumb -mlittle-endian
+</span><span class='line'>
+</span><span class='line'><span class="nv">AS</span> <span class="o">=</span> arm-none-eabi-as
+</span><span class='line'><span class="nv">CC</span> <span class="o">=</span> arm-none-eabi-gcc
+</span><span class='line'><span class="nv">LD</span> <span class="o">=</span> arm-none-eabi-gcc
+</span><span class='line'><span class="nv">OD</span> <span class="o">=</span> arm-none-eabi-objdump
+</span><span class='line'><span class="nv">OC</span> <span class="o">=</span> arm-none-eabi-objcopy
+</span><span class='line'>
+</span><span class='line'><span class="nv">CCFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span> <span class="k">$(</span>INCLUDES<span class="k">)</span> -Wall -fno-common -O0 -fomit-frame-pointer -Wstrict-prototypes -fverbose-asm
+</span><span class='line'><span class="nv">ASFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span>
+</span><span class='line'><span class="nv">LDFLAGS</span> <span class="o">=</span> <span class="k">$(</span>CPU<span class="k">)</span> -Wl,--gc-sections
+</span><span class='line'><span class="nv">OCFLAGS</span> <span class="o">=</span> -Oihex
+</span><span class='line'><span class="nv">ODFLAGS</span> <span class="o">=</span> -S
+</span><span class='line'>
+</span><span class='line'><span class="nf">all </span><span class="o">:</span> <span class="n">test</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">test </span><span class="o">:</span> <span class="k">$(</span><span class="nv">PROJECT</span><span class="k">)</span>.<span class="n">elf</span>
+</span><span class='line'>    <span class="k">$(</span>OC<span class="k">)</span> <span class="k">$(</span>OCFLAGS<span class="k">)</span> <span class="k">$(</span>PROJECT<span class="k">)</span>.elf <span class="k">$(</span>PROJECT<span class="k">)</span>.hex
+</span><span class='line'>    <span class="k">$(</span>OD<span class="k">)</span> <span class="k">$(</span>ODFLAGS<span class="k">)</span> <span class="k">$(</span>PROJECT<span class="k">)</span>.elf &gt; <span class="k">$(</span>PROJECT<span class="k">)</span>.lst
+</span><span class='line'>    mv *.o *.elf *.hex *.lst Output
+</span><span class='line'>
+</span><span class='line'><span class="nf">$(PROJECT).elf </span><span class="o">:</span> <span class="k">$(</span><span class="nv">FILES</span><span class="k">)</span>
+</span><span class='line'>    <span class="k">$(</span>LD<span class="k">)</span> <span class="k">$(</span>LDFLAGS<span class="k">)</span> -T<span class="k">$(</span>LINKERFILE<span class="k">)</span> -o <span class="nv">$@</span> <span class="nv">$^</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Compile C source files</span>
+</span><span class='line'><span class="nf">%.o </span><span class="o">:</span> %.<span class="n">c</span>
+</span><span class='line'>    <span class="k">$(</span>CC<span class="k">)</span> <span class="k">$(</span>CCFLAGS<span class="k">)</span> -c -g -o <span class="nv">$@</span> <span class="nv">$^</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Compile ASM files</span>
+</span><span class='line'><span class="nf">%.o </span><span class="o">:</span> %.<span class="n">s</span>
+</span><span class='line'>    <span class="k">$(</span>AS<span class="k">)</span> <span class="k">$(</span>ASFLAGS<span class="k">)</span> -o <span class="nv">$@</span> <span class="nv">$^</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">clean </span><span class="o">:</span>
+</span><span class='line'>    rm Output/*.*
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>En esta ocasión compilamos tres archivos fuente y tenemos un subfolder el cual hay que indicarle al compilador.</p>
+
+<p>A compilar se ha dicho</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_CMSIS
+</span><span class='line'>$ make</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Si la terminal no arrojo ningun error deberemos tener nuestro archivo <strong>test.hex</strong> en la carpeta Output</p>
+
+<h2>A Programar se ha dicho</h2>
+
+<p>Abre una nueva terminal y conéctate con tu tarjeta usando OpenOCD</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>En la terminal anterior mandaremos nuestro programa compilado a nuestra tarjeta usando <strong>telnet</strong>, conéctate al puerto 4444 de la siguiente manera</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ telnet localhost 4444</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Si te acepta la coneccion, solo resta mandar el archivo .hex, escribe los siguientes comandos en orden</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>reset halt
+</span><span class='line'>flash write_image erase test.hex
+</span><span class='line'>reset run</span></code></pre></td></tr></table></div></figure>
+
+
+<p>El primer comando resetea y detiene al micro, el segundo manda el programa y lo escribe en la memoria y el último lo resetea y pone a correr el programa, asi que ya podras ver un feliz led parpadeando.</p>
+
+<h2>Conclusion</h2>
+
+<p>Incluir los archivos que nos indica el estándar <strong>CMSIS</strong> nos facilita la interacción con los registros del sistema, pero eso no es lo unico ya que tambien nos permitira de una forma mas sencilla llamar las funciones de interrupción y controlar los registros internos del CPU.</p>
+
+<p>Lo único que no nos exenta es el hecho de configurar los periféricos del micro de manera manual sin la ayuda de ningún framework o librería.</p>
+</div>
+
+
+      <footer>
+        <p class="meta text-muted">
+          
+  
+
+<span class="glyphicon glyphicon-user"></span> <span class="byline author vcard" itemprop="author" itemscope itemtype="http://schema.org/Person">Posted by <span class="fn" itemprop="name">Diego</span></span>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-08T13:07:34-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 8<sup>th</sup>, 2014</time>
+          
+
+<span class="glyphicon glyphicon-tags"></span>&nbsp;
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cortex-m0/'>cortex-m0</a>
+  
+</span>
+
+
+        </p>
+        
+          <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis/" data-via="" data-counturl="http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+        
+        
+          <ul class="meta text-muted pager">
+            
+            <li class="previous"><a href="/blog/2014/08/06/primer-programa-bare-board/" title="Previous Post: Primer Programa (Bare Board)">&laquo; Primer Programa (Bare Board)</a></li>
+            
+            
+          </ul>
+        
+      </footer>
+    </article>
+    
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+      </section>
+    
+  </div>
+
+  
+  <aside class="sidebar col-md-3">
+    
+      <section class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Recent Posts</h3>
+  </div>
+  
+  <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item active" href="/blog/2014/08/08/primer-programa-cmsis/">Primer Programa CMSIS</a>
+    
+    <a class="list-group-item " href="/blog/2014/08/06/primer-programa-bare-board/">Primer Programa (Bare Board)</a>
+    
+    <a class="list-group-item " href="/blog/2014/08/06/instalando-openocd/">Instalando OpenOCD</a>
+    
+    <a class="list-group-item " href="/blog/2014/08/05/instalando-el-compilador-gnu-arm/">Instalando El Compilador GNU ARM</a>
+    
+  </div>
+</section>
+
+<section class="panel panel-default clearfix">
+  <div class="panel-heading">
+      <h3 class="panel-title">GitHub Repos</h3>
+  </div>
+  <div class="list-group" id="gh_repos">
+    <p class="loading">Status updating...</p>
+  </div>
+  
+    <div class="gh-profile-link pull-right text-muted">
+      <a href="https://github.com/testDiego">@testDiego</a> on GitHub
+    </div>
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'testDiego',
+            count: 1,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+
+    
+  </aside>
+  
+</div>
+
+        </div>
+      </div>
+    </div>
+    <footer role="contentinfo"><div class="container">
+    <p class="text-muted credits">
+  Copyright &copy; 2014 - Diego<br>
+  <small>
+      <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>,
+      <span class="credit">customized with <a href="https://github.com/kAworu/octostrap3">octostrap3</a></span>.
+  </small>
+</p>
+
+</div>
+</footer>
+    
+
+<script type="text/javascript">
+      var disqus_shortname = 'elDiego84';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis/';
+        var disqus_url = 'http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+<script src="/assets/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/javascripts/modernizr-2.0.js"></script>
+
+
+  </body>
+</html>

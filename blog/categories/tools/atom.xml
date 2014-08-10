@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Tools | Diego Blog]]></title>
+  <link href="http://testDiego.github.io/blog/categories/tools/atom.xml" rel="self"/>
+  <link href="http://testDiego.github.io/"/>
+  <updated>2014-08-09T22:18:53-07:00</updated>
+  <id>http://testDiego.github.io/</id>
+  <author>
+    <name><![CDATA[Diego]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Instalando OpenOCD]]></title>
+    <link href="http://testDiego.github.io/blog/2014/08/06/instalando-openocd/"/>
+    <updated>2014-08-06T11:54:37-07:00</updated>
+    <id>http://testDiego.github.io/blog/2014/08/06/instalando-openocd</id>
+    <content type="html"><![CDATA[<p>Ya con el compilador instalado, deberemos instalar un programa que nos permita comunicarnos con nuestro hardware y programarlo. Para ello usaremos <strong>OpenOCD</strong>, el cual es un pequeño servidor que se conectará con nuestro programador/debugger y nos permitirá pasar a nuestro micro el programa ya compilado.</p>
+
+<p><strong>NOTA</strong> Necesitamos instalar unas pequeñas librerias a manera de prerequisito (drivers USB). En Ubuntu escribe
+<code>
+$ sudo apt-get install libftdi-dev libusb-1.0-0-dev
+</code></p>
+
+<p><strong>OpenOCD</strong> es un software totalmente libre y en constante actualización, descarga la versión <strong>0.8.0</strong> de <a href="http://sourceforge.net/projects/openocd/files/openocd/0.8.0/"><strong>Aquí</strong></a>.</p>
+
+<p>Descomprime el archivo descargado con el siguiente comando en la terminal.
+<code>
+$ tar xvjf openocd-0.8.0.tar.bz2
+</code></p>
+
+<!--more-->
+
+
+<p><strong>OpenOCD</strong> se distribuye usando sus archivos fuente, así que antes de ejecutarlo debemos compilarlo y despues instalarlo. No te preocupes son pasos muy sencillos.</p>
+
+<p>Primero pasate a la carpeta de OpenOCD ya descomprimido
+<code>
+$ cd openocd-0.8.0
+</code></p>
+
+<p>Ahora lo configuraremos para que trabaje con ciertos debuggers, como <strong>jlink</strong>, <strong>ftdi</strong> y <strong>stlink</strong> ( <em>que es el que usaremos nosotros</em> )
+<code>
+$ ./configure --enable-stlink --enable-jlink --enable-ftdi
+</code></p>
+
+<p>Compilamos
+<code>
+$ make
+</code></p>
+
+<p>Por último instalamos
+<code>
+$ sudo make install
+</code></p>
+
+<p><strong>OpenOCD</strong> quedó instalado en dos diferentes folders de nuestro sistema linux, el ejecutable ( <em>binario</em> ) quedará en el directorio <code>/usr/local/bin</code>.</p>
+
+<p>La otra carpeta importante <code>/usr/local/share/openocd/scripts</code> es donde quedarán instalados los scripts que nos servirán para identificar el micro que queremos programar y contiene la información necesaria para decirle a <strong>OpenOCD</strong> como programarlo, estos scripts están agrupados en tres niveles:</p>
+
+<blockquote><ul>
+<li><strong>target.-</strong> scripts con instrucciones especificas para microcontroladores/procesadores</li>
+<li><strong>interface.-</strong> scripts con la informacion del debugger/programador a usar</li>
+<li><strong>board.-</strong> scripts con instrucciones que combinan interface y target. Y pertenecen a tarjetas especifcas que ya estan en el mercado</li>
+</ul>
+</blockquote>
+
+<p>Antes de prenderle fuego a tu board ( <em>conectarla a OpenOCD</em> ) deberemos registrar ciertas reglas, para que el debugger ( <em>ST-Link-V2-1</em> ) sea reconocido por nuestro sistema. Para no entrar mas en detallas simplemente ejecuta lo siguietne en la terminal.
+<code>
+$ sudo cp  /usr/local/share/openocd/contrib/openocd.udev  /etc/udev/rules.d/98-openocd.rules
+$ sudo udevadm control --reload-rules
+</code></p>
+
+<p>Bueno basta de Charla, hay que probar si realmente funciona. Para ello usaremos nuestra nueva tarjeta <strong>Nucleo-F072RB</strong> de la marca <strong>ST</strong>, el cual por cierto posee un micro con CPU <strong>Cortex-M0</strong>. Conectala al puerto USB ( <em>se abrirá una ventana, pues la PC la identificara como un mass storage, no te apures solo cierra la ventana</em> )</p>
+
+<p>En la terminal ejecuta OpenOCD de la siguiente manera.
+<code>
+$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
+</code></p>
+
+<p>Si todo resulto bien te aparecera la siguiente información.
+<code>
+Open On-Chip Debugger 0.8.0 (2014-08-02-17:39)
+Licensed under GNU GPL v2
+For bug reports, read
+    http://openocd.sourceforge.net/doc/doxygen/bugs.html
+Info : This adapter doesn't support configurable speed
+Info : STLINK v2 JTAG v22 API v2 SWIM v5 VID 0x0483 PID 0x374B
+Info : using stlink api v2
+Info : Target voltage: 3.246689
+Info : stm32f0x.cpu: hardware has 4 breakpoints, 2 watchpoints
+</code></p>
+
+<p>Con un <code>Ctrl+C</code> sales de openocd.</p>
+
+<p>Si requieres mas informacion consulta:</p>
+
+<ul>
+<li><a href="openocd.org">openocd.org</a></li>
+<li><a href="http://gnuarmeclipse.livius.net/blog/openocd-install/">http://gnuarmeclipse.livius.net/blog/openocd-install/</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Instalando El Compilador GNU ARM]]></title>
+    <link href="http://testDiego.github.io/blog/2014/08/05/instalando-el-compilador-gnu-arm/"/>
+    <updated>2014-08-05T21:52:45-07:00</updated>
+    <id>http://testDiego.github.io/blog/2014/08/05/instalando-el-compilador-gnu-arm</id>
+    <content type="html"><![CDATA[<p>Vamos a empezar con nuestro primer post, y consistira en la instalacion y puesta a punto de nuestra herramienta de desarrollo favorita para microcontroladores <strong>ARM</strong>. El compilador <strong>GCC</strong> es totalemnte libre y lo mejor, no presenta limitacion alguna =).</p>
+
+<p>Primero lo primero, Deberas descargar el toolchain de su pagina oficial <a href="https://launchpad.net/gcc-arm-embedded"><strong>aqui</strong></a>. Si usas linux, como yo =) descarga el archivo <strong>Linux Installation Tarball</strong>.</p>
+
+<p>Habre la terminal y crea un nuevo folder en tu directorio de usuario. Es en este directorio donde quedara instalado nuestro compilador.
+<code>
+$ mkdir ~/ARM
+</code></p>
+
+<p>Descomprime el archivo descargado en el directorio recien creado (sustituye las x por la version que hayas descargado).
+<code>
+$ tar -xvjf gcc-arm-none-eabi-X_X-xxxxxx-xxxxxxxx-linux.tar.bz2 -C ~/ARM/
+</code></p>
+
+<!--more-->
+
+
+<p>El siguiente paso es agregar el directorio bin a la variable global <strong>PATH</strong> para que sea ejecutable por la terminal en cualquier directorio.
+<code>
+$ nano ~/.bashrc
+</code></p>
+
+<p>Agrega la siguiente linea al final del archivo, sustituye las <strong>x</strong> con el numero de la version que tengas, fijate en el nombre de la carpeta que descomprimiste.
+<code>
+export PATH=$PATH:$HOME/ARM/gcc-arm-none-eabi-X_X-xxxxxx/bin
+</code></p>
+
+<p>Reinicia la terminal y escribe el siguiente comando que te dira la version del toolchain instalado.
+<code>
+$ arm-none-eabi-gcc -v
+</code></p>
+
+<p>Listo ya tienes tu compilador instalado.</p>
+]]></content>
+  </entry>
+  
+</feed>

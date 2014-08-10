@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  
+  <url>
+    <loc>http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis/</loc>
+    <lastmod>2014-08-08T13:07:34-07:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://testDiego.github.io/blog/2014/08/06/primer-programa-bare-board/</loc>
+    <lastmod>2014-08-06T16:17:22-07:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://testDiego.github.io/blog/2014/08/06/instalando-openocd/</loc>
+    <lastmod>2014-08-06T11:54:37-07:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>http://testDiego.github.io/blog/2014/08/05/instalando-el-compilador-gnu-arm/</loc>
+    <lastmod>2014-08-05T21:52:45-07:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  
+  
+  <url>
+    <loc>http://testDiego.github.io/</loc>
+    <lastmod>2014-08-09T22:18:53-07:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>http://testDiego.github.io/blog/archives/</loc>
+    <lastmod>2014-08-09T22:18:53-07:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  
+</urlset>
