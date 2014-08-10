@@ -7,7 +7,8 @@ title: Diego Blog
 subtitle: A Blog Very Embedded.
 author: Diego
 simple_search: https://www.google.com/search
-description: Este sencillo blog estara dedicado a micros ARM mas concretamente del fabricante ST
+keywords: tutorial,gnu,arm,microcontrollers,linux,cortexm0,st,stm32f0,cstm32f0cube
+description: Este blog esta dedicado a micros ARM mas concretamente del fabricante ST. Principalmente a la programacion en ambientes linux mediante herrameintas open source
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -51,11 +52,18 @@ titlecase: true       # Converts page and post titles to titlecase
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [asides/recent_posts.html, asides/github.html, custom/asides/category_list.html]
+default_asides: [
+    asides/recent_posts.html,
+    custom/asides/category_list.html,
+    asides/github.html
+]
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.
-blog_index_asides: [custom/asides/category_list.html]
+blog_index_asides: [
+    asides/recent_posts.html,
+    custom/asides/category_list.html
+]
 # post_asides:
 # page_asides:
 
