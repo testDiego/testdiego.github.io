@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Tools | Diego Blog]]></title>
-  <link href="http://testDiego.github.io/blog/categories/tools/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Arm Tools | Diego Blog]]></title>
+  <link href="http://testDiego.github.io/blog/categories/arm-tools/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-09T22:18:53-07:00</updated>
+  <updated>2014-08-09T23:27:55-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>

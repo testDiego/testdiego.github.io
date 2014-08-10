@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Cortex-m0 | Diego Blog]]></title>
-  <link href="http://testDiego.github.io/blog/categories/cortex-m0/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Stm32f0 | Diego Blog]]></title>
+  <link href="http://testDiego.github.io/blog/categories/stm32f0/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-09T22:18:53-07:00</updated>
+  <updated>2014-08-09T23:27:55-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -18,7 +18,7 @@
     <link href="http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis/"/>
     <updated>2014-08-08T13:07:34-07:00</updated>
     <id>http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis</id>
-    <content type="html"><![CDATA[<p>En el post <a href="">Primer Programa Bare Board</a> aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( <em>excepto el startup y el linker file</em> ). En esta ocasión usaremos la definición de registros acorde al estándar <strong>CMSIS</strong>.</p>
+    <content type="html"><![CDATA[<p>En el post <a href="http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board/">Primer Programa Bare Board</a> aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( <em>excepto el startup y el linker file</em> ). En esta ocasión usaremos la definición de registros acorde al estándar <strong>CMSIS</strong>.</p>
 
 <p><strong>CMSIS</strong> nos ayudará a acceder a los registros del micro de una forma más cómoda y organizada, además es un estándar difundido entre los fabricantes de micros con CPUs <strong>ARM</strong>,</p>
 
