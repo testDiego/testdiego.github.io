@@ -62,7 +62,8 @@ default_asides: [
 # and add an array with the asides you want to use.
 blog_index_asides: [
     asides/recent_posts.html,
-    custom/asides/category_list.html
+    custom/asides/category_list.html,
+    asides/github.html
 ]
 # post_asides:
 # page_asides:
@@ -78,7 +79,7 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
+twitter_user: DiegoMX84
 twitter_tweet_button: true
 
 # Google +1
@@ -103,7 +104,7 @@ disqus_short_name: elDiego84
 disqus_show_comment_count: true
 
 # Google Analytics
-google_analytics_tracking_id: UA-53683600-1
+google_analytics_tracking_id: UA-53687731-1
 
 # Facebook Like
 facebook_like: true
