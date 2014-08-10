@@ -3,7 +3,9 @@ layout: post
 title: "Instalando OpenOCD"
 date: 2014-08-06 11:54:37 -0700
 comments: true
-categories: [tools]
+categories: [ARM tools]
+keywords: tutorial,openocd,gnu,arm,linux
+description: Tutorial para compilar, cofigurar e instalar OpenOCD en linux con soporte para jlink, ftdi y stlink 
 ---
 
 Ya con el compilador instalado, deberemos instalar un programa que nos permita comunicarnos con nuestro hardware y programarlo. Para ello usaremos **OpenOCD**, el cual es un pequeño servidor que se conectará con nuestro programador/debugger y nos permitirá pasar a nuestro micro el programa ya compilado.

@@ -3,7 +3,9 @@ layout: post
 title: "Instalando el compilador GNU ARM"
 date: 2014-08-05 21:52:45 -0700
 comments: true
-categories: [tools]
+categories: [ARM tools]
+keywords: tutorial,GNU,ARM,microcontrollers
+description: Pequeño tutorial para instalar el compilador GNU ARM en linux en su distribucion tarball del sitio official en launchpad
 ---
 
 Vamos a empezar con nuestro primer post, y consistira en la instalacion y puesta a punto de nuestra herramienta de desarrollo favorita para microcontroladores **ARM**. El compilador **GCC** es totalemnte libre y lo mejor, no presenta limitacion alguna =).

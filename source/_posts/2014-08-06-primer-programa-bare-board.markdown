@@ -3,7 +3,9 @@ layout: post
 title: "Primer Programa (Bare Board)"
 date: 2014-08-06 16:17:22 -0700
 comments: true
-categories: [Cortex-M0]
+categories: [stm32f0]
+keywords: tutorial,arm,linux,microcontrollers,st,stm32f0,cortex-m0,cmsis
+description: Creacion de un primer proyecto para un micro stm32f0 utilizadno la tarjeta Nucleo-f072rb, el compilador gnu arm, openocd
 ---
 
 Con nuestro compilador instalado y **OpenOCD** listo para comunicarse con nuestra tarjeta **Nucleo-F072RB**, llego la hora de crear nuestro programa _hola mundo_. Antes que nada aclararemos que no usaremos ningun IDE en especifico, para escribir el codigo usaremos cualquier editor de texto plano ( _te recomiendo Sublime Text_ ) y la compilacion la realizaremos usando archivos **makefiles** y la **terminal**.

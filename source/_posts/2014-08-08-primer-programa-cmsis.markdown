@@ -3,10 +3,12 @@ layout: post
 title: "Primer Programa CMSIS"
 date: 2014-08-08 13:07:34 -0700
 comments: true
-categories: [Cortex-M0]
+categories: [stm32f0]
+keywords: tutorial,arm,linux,microcontrollers,st,stm32f0,cortex-m0,cmsis,stm32cubef0
+description: Creacion de un primer proyecto para un micro stm32f0 utilizadno la tarjeta Nucleo-f072rb, el compilador gnu arm, openocd y el estandar CMSIS
 ---
 
-En el post [Primer Programa Bare Board]() aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( _excepto el startup y el linker file_ ). En esta ocasión usaremos la definición de registros acorde al estándar **CMSIS**.
+En el post [Primer Programa Bare Board](http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board/) aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( _excepto el startup y el linker file_ ). En esta ocasión usaremos la definición de registros acorde al estándar **CMSIS**.
 
 **CMSIS** nos ayudará a acceder a los registros del micro de una forma más cómoda y organizada, además es un estándar difundido entre los fabricantes de micros con CPUs **ARM**,
 
