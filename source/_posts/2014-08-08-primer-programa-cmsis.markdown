@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Primer Programa CMSIS"
+title: "Primer Programa CMSIS (pt II)"
 date: 2014-08-08 13:07:34 -0700
 comments: true
 categories: [stm32f0]
@@ -8,7 +8,7 @@ keywords: tutorial,arm,linux,microcontrollers,st,stm32f0,cortex-m0,cmsis,stm32cu
 description: Creacion de un primer proyecto para un micro stm32f0 utilizadno la tarjeta Nucleo-f072rb, el compilador gnu arm, openocd y el estandar CMSIS
 ---
 
-En el post [Primer Programa Bare Board](http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board/) aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( _excepto el startup y el linker file_ ). En esta ocasión usaremos la definición de registros acorde al estándar **CMSIS**.
+En el post [**Primer Programa Bare Board**](http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board/) aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( _excepto el startup y el linker file_ ). En esta ocasión usaremos la definición de registros acorde al estándar **CMSIS**.
 
 **CMSIS** nos ayudará a acceder a los registros del micro de una forma más cómoda y organizada, además es un estándar difundido entre los fabricantes de micros con CPUs **ARM**,
 
@@ -175,4 +175,21 @@ Incluir los archivos que nos indica el estándar **CMSIS** nos facilita la inter
 
 Lo único que no nos exenta es el hecho de configurar los periféricos del micro de manera manual sin la ayuda de ningún framework o librería.
 
+Para terminar te dejamos la estrucutra del directorio de tu proyecto
+```
+.
+├── main.c
+├── makefile
+├── Output/
+├── STM32F072RB_FLASH.ld
+└── System/
+    ├── arm_math.h
+    ├── core_cm0.h
+    ├── core_cmFunc.h
+    ├── core_cmInstr.h
+    ├── startup_stm32f072xb.s
+    ├── stm32f072xb.h
+    ├── system_stm32f0xx.c
+    └── system_stm32f0xx.h
 
+```

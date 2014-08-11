@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Primer Programa (Bare Board)"
+title: "Primer Programa Bare Board (pt I)"
 date: 2014-08-06 16:17:22 -0700
 comments: true
 categories: [stm32f0]
@@ -29,11 +29,11 @@ STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/st
 ```
 
 Habra que hacer una pequeña modificacion al archivo de **startup_stm32f072xb.s** para que no nos de problema con una funcion que manda llamar ( _y que por lo pronto no tenemos_ ). Abre con tu editor favorito el archivo y comenta la linea numero **101**. _Al archivo le deberas quitar la proteccion contra escritura para realizar lo anterior_.
-{% codeblock lang:gas startup_stm32f072xb.s %}
+```
 100 /* Call the clock system intitialization function.*/
 101    //bl  SystemInit
 102 /* Call static constructors */
-{% endcodeblock %}
+```
 
 En el directorio de tu proyecto crea una carpeta a la que llamaremos **Output** y sera la carpeta en la que dejaremos los archivos producidos por la compilacion
 ```
@@ -160,3 +160,14 @@ reset run
 El primer comando resetea y detiene al micro, el segundo manda el programa y lo escribe en la memoria y el ultimo lo resetea y pone a correr el programa, asi que ya podras ver un feliz led parpadeando.
 
 Esta manera de programar ( _sin ayuda alguna_ ) te obligara a leer bien la hoja de datos del micro y en consecuencia aprenderas muy bien a utilizar la maquina que estas usando, pero te costara buenas desveladas y canas verdes.
+
+Para terminar te dejamos la estrucutra del directorio de tu proyecto
+```
+.
+├── main.c
+├── makefile
+├── Output/
+├── startup_stm32f072xb.s
+├── STM32F072RB_FLASH.ld
+
+```
