@@ -177,9 +177,31 @@
 </span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cmInstr.h</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Antes de seguir avanzando, aclararemos que el archivo <strong>startup</strong> no le haremos ninguna modificación y que los archivos <strong>system</strong> nos permiten inicializar algunas pequeñas cosas del micro, como los relojes de las memorias.</p>
+<p>Antes de seguir avanzando, aclararemos que al archivo <strong>startup</strong> no le haremos ninguna modificación y que los archivos <strong>system</strong> nos permiten inicializar algunas pequeñas cosas del micro, como los relojes de las memorias.</p>
 
-<p>Bien, creamos nuestra carpeta <strong>Output</strong> donde guardaremos los archivos que nos arroja la compilación</p>
+<p>Al que si modificaremos es al archivo <strong>system_stm32f0xx.c</strong>, Lo abrimos con nuestro editor de texto y escribimos lo siguiente apartir de la <strong>linea 110</strong>.</p>
+
+<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>system_stm32f0xx.c </h3></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#if !defined  (HSI48_VALUE)</span>
+</span><span class='line'>    <span class="cp">#define HSI48_VALUE ((uint32_t)48000000)</span><span class="cm">/*!&lt; Default value of the Internal USB oscillator in Hz.</span>
+</span><span class='line'><span class="cm">                                             This value can be provided and adapted by the user application. */</span><span class="cp"></span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>y modificamos la <strong>linea 84</strong> de la siguiente manera</p>
+
+<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>system_stm32f0xx.c </h3></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Creamos nuestra carpeta <strong>Output</strong> donde guardaremos los archivos que nos arroja la compilación</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir test_f072_CMSIS/Output</span></code></pre></td></tr></table></div></figure>
@@ -250,7 +272,7 @@
 <p>Solo nos falta crear el archivo makefile para que make realice la compilación.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir test_f072_CMSIS/makefile</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ touch test_f072_CMSIS/makefile</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Abre el archivo en tu editor de texto y escribe el siguiente código. Recuerda usar TABs y no espacios para las indentación.</p>
@@ -300,16 +322,26 @@
 <span class='line-number'>42</span>
 <span class='line-number'>43</span>
 <span class='line-number'>44</span>
-</pre></td><td class='code'><pre><code class='makefile'><span class='line'><span class="nv">PROJECT</span> <span class="o">=</span> <span class="nb">test</span>  <span class="c">#Nombre que desees para tu proyecto</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+</pre></td><td class='code'><pre><code class='makefile'><span class='line'><span class="c">#Nombre que desees para tu proyecto</span>
+</span><span class='line'><span class="nv">PROJECT</span> <span class="o">=</span> <span class="nb">test</span>
 </span><span class='line'>
-</span><span class='line'><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o system_stm32f0xx.o <span class="c">#archivos a compilar</span>
+</span><span class='line'><span class="c">#archivos a compilar</span>
+</span><span class='line'><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o system_stm32f0xx.o
 </span><span class='line'>
-</span><span class='line'><span class="nv">VPATH</span> <span class="o">=</span> system <span class="c">#directorio con archivos a compilar (*.c, *.s)</span>
+</span><span class='line'><span class="c">#directorio con archivos a compilar (*.c, *.s)</span>
+</span><span class='line'><span class="nv">VPATH</span> <span class="o">=</span> system
 </span><span class='line'>
-</span><span class='line'><span class="nv">INCLUDES</span> <span class="o">=</span> -I system <span class="c">#directorio con archivos headers (*.h)</span>
+</span><span class='line'><span class="c">#directorio con archivos headers (*.h)</span>
+</span><span class='line'><span class="nv">INCLUDES</span> <span class="o">=</span> -I system
 </span><span class='line'>
 </span><span class='line'><span class="c"># Apartir de aqui no modifiques nada a menos que sepas lo que hases. ;)</span>
-</span><span class='line'><span class="nv">LINKERFILE</span> <span class="o">=</span> STM32F072RB_FLASH.ld <span class="c"># linker script a usar</span>
+</span><span class='line'><span class="c"># linker script a usar</span>
+</span><span class='line'><span class="nv">LINKERFILE</span> <span class="o">=</span> STM32F072RB_FLASH.ld
 </span><span class='line'><span class="nv">CPU</span> <span class="o">=</span> -mcpu<span class="o">=</span>cortex-m0 -mthumb -mlittle-endian
 </span><span class='line'>
 </span><span class='line'><span class="nv">AS</span> <span class="o">=</span> arm-none-eabi-as
@@ -361,25 +393,29 @@
 
 <h2>A Programar se ha dicho</h2>
 
-<p>Abre una nueva terminal y conéctate con tu tarjeta usando OpenOCD</p>
+<p>Abre una nueva terminal y conectate con tu tarjeta usando OpenOCD</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_CMSIS  #Recomendacion, siempre estar en el directorio de tu proyecto
+</span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
 
 
-<p>En la terminal anterior mandaremos nuestro programa compilado a nuestra tarjeta usando <strong>telnet</strong>, conéctate al puerto 4444 de la siguiente manera</p>
+<p>En la terminal anterior madaremos nuestro programa compilado a nuestra tarjeta usando <strong>telnet</strong>, conectate al puerto <strong>4444</strong> de la siguiente manera</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ telnet localhost 4444</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_CMSIS #Recomendacion, siempre estar en el directorio de tu proyecto
+</span><span class='line'>$ telnet localhost 4444</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Si te acepta la coneccion, solo resta mandar el archivo .hex, escribe los siguientes comandos en orden</p>
+<p>Si te acepta la conexion, solo restara mandar el archivo <strong>.hex</strong>. Escribe los siguientes comandos en orden</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>reset halt
-</span><span class='line'>flash write_image erase test.hex
+</span><span class='line'>flash write_image erase Output/test.hex
 </span><span class='line'>reset run</span></code></pre></td></tr></table></div></figure>
 
 
@@ -391,7 +427,7 @@
 
 <p>Lo único que no nos exenta es el hecho de configurar los periféricos del micro de manera manual sin la ayuda de ningún framework o librería.</p>
 
-<p>Para terminar te dejamos la estrucutra del directorio de tu proyecto</p>
+<p>Para terminar te dejamos la estructura del directorio de tu proyecto</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -501,6 +537,8 @@
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
+    
     <a class="list-group-item " href="/blog/2014/08/10/primer-programa-con-stm32f0cube/">Primer Programa Con STM32F0Cube (Pt III)</a>
     
     <a class="list-group-item active" href="/blog/2014/08/08/primer-programa-cmsis/">Primer Programa CMSIS (Pt II)</a>
@@ -508,8 +546,6 @@
     <a class="list-group-item " href="/blog/2014/08/06/primer-programa-bare-board/">Primer Programa Bare Board (Pt I)</a>
     
     <a class="list-group-item " href="/blog/2014/08/06/instalando-openocd/">Instalando OpenOCD</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/05/instalando-el-compilador-gnu-arm/">Instalando El Compilador GNU ARM</a>
     
   </div>
 </section>
@@ -527,7 +563,7 @@
     
     
     <a class="list-group-item " href="/blog/categories/stm32f0/index.html">
-        <span class="badge">3</span>
+        <span class="badge">4</span>
         stm32f0
       </a>
     

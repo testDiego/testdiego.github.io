@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Arm Tools | Diego Blog]]></title>
   <link href="http://testDiego.github.io/blog/categories/arm-tools/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-10T22:17:56-07:00</updated>
+  <updated>2014-08-13T17:24:09-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -61,12 +61,12 @@ $ sudo make install
 
 <p>La otra carpeta importante <code>/usr/local/share/openocd/scripts</code> es donde quedarán instalados los scripts que nos servirán para identificar el micro que queremos programar y contiene la información necesaria para decirle a <strong>OpenOCD</strong> como programarlo, estos scripts están agrupados en tres niveles:</p>
 
-<blockquote><ul>
+<ul>
 <li><strong>target.-</strong> scripts con instrucciones especificas para microcontroladores/procesadores</li>
 <li><strong>interface.-</strong> scripts con la informacion del debugger/programador a usar</li>
 <li><strong>board.-</strong> scripts con instrucciones que combinan interface y target. Y pertenecen a tarjetas especifcas que ya estan en el mercado</li>
 </ul>
-</blockquote>
+
 
 <p>Antes de prenderle fuego a tu board ( <em>conectarla a OpenOCD</em> ) deberemos registrar ciertas reglas, para que el debugger ( <em>ST-Link-V2-1</em> ) sea reconocido por nuestro sistema. Para no entrar mas en detallas simplemente ejecuta lo siguietne en la terminal.
 <code>

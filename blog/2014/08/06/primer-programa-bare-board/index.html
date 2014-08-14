@@ -185,7 +185,7 @@
 
 <h2>Escribiendo el codigo</h2>
 
-<p>Habre el archivo con tu editor de texto favorito ( <em>como Gedit</em> ) y escribe el siguiente codigo</p>
+<p>Abre el archivo con tu editor de texto favorito ( <em>como Gedit</em> ) y escribe el siguiente codigo</p>
 
 <figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>Hola Mundo - main.c </h3></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -243,7 +243,7 @@
 </pre></td><td class='code'><pre><code class=''><span class='line'>$ touch ~/test_f072/makefile</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Habre este nuevo archivo con tu editor de texto favorito ( <em>digamos atom</em> ) y escribe lo siguiente</p>
+<p>Abre este nuevo archivo con tu editor de texto favorito ( <em>digamos atom</em> ) y escribe lo siguiente</p>
 
 <figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>makefile </h3></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -286,12 +286,18 @@
 <span class='line-number'>38</span>
 <span class='line-number'>39</span>
 <span class='line-number'>40</span>
-</pre></td><td class='code'><pre><code class='makefile'><span class='line'><span class="nv">PROJECT</span> <span class="o">=</span> <span class="nb">test</span>  <span class="c">#Nombre que desees para tu proyecto</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='makefile'><span class='line'><span class="c"># Nombre que desees para tu proyecto</span>
+</span><span class='line'><span class="nv">PROJECT</span> <span class="o">=</span> <span class="nb">test</span>
 </span><span class='line'>
-</span><span class='line'><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o <span class="c">#archivos fuente a compilar</span>
+</span><span class='line'><span class="c"># Archivos fuente a compilar</span>
+</span><span class='line'><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o
 </span><span class='line'>
 </span><span class='line'><span class="c"># Apartir de aqui no modifiques nada a menos que sepas lo que hases. ;)</span>
-</span><span class='line'><span class="nv">LINKERFILE</span> <span class="o">=</span> STM32F072RB_FLASH.ld <span class="c"># linker script a usar</span>
+</span><span class='line'><span class="c"># linker script a usar</span>
+</span><span class='line'><span class="nv">LINKERFILE</span> <span class="o">=</span> STM32F072RB_FLASH.ld
 </span><span class='line'><span class="nv">CPU</span> <span class="o">=</span> -mcpu<span class="o">=</span>cortex-m0 -mthumb -mlittle-endian
 </span><span class='line'>
 </span><span class='line'><span class="nv">AS</span> <span class="o">=</span> arm-none-eabi-as
@@ -343,25 +349,29 @@
 
 <h2>A Programar se ha dicho</h2>
 
-<p>Habre una nueva terminal y conectate con tu tarjeta usando OpenOCD</p>
+<p>Abre una nueva terminal y conectate con tu tarjeta usando OpenOCD</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072  #Recomendacion, siempre estar en el directorio de tu proyecto
+</span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
 
 
 <p>En la terminal anterior madaremos nuestro programa compilado a nuestra tarjeta usando <strong>telnet</strong>, conectate al puerto <strong>4444</strong> de la siguiente manera</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ telnet localhost 4444</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #Recomendacion, siempre estar en el directorio de tu proyecto
+</span><span class='line'>$ telnet localhost 4444</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Si te acepta la coneccion, solo restara mandar el archivo <strong>.hex</strong>. Escribe los siguientes comandos en orden</p>
+<p>Si te acepta la conexion, solo restara mandar el archivo <strong>.hex</strong>. Escribe los siguientes comandos en orden</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>reset halt
-</span><span class='line'>flash write_image erase test.hex
+</span><span class='line'>flash write_image erase Output/test.hex
 </span><span class='line'>reset run</span></code></pre></td></tr></table></div></figure>
 
 
@@ -369,7 +379,7 @@
 
 <p>Esta manera de programar ( <em>sin ayuda alguna</em> ) te obligara a leer bien la hoja de datos del micro y en consecuencia aprenderas muy bien a utilizar la maquina que estas usando, pero te costara buenas desveladas y canas verdes.</p>
 
-<p>Para terminar te dejamos la estrucutra del directorio de tu proyecto</p>
+<p>Para terminar te dejamos la estructura del directorio de tu proyecto</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -463,6 +473,8 @@
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
+    
     <a class="list-group-item " href="/blog/2014/08/10/primer-programa-con-stm32f0cube/">Primer Programa Con STM32F0Cube (Pt III)</a>
     
     <a class="list-group-item " href="/blog/2014/08/08/primer-programa-cmsis/">Primer Programa CMSIS (Pt II)</a>
@@ -470,8 +482,6 @@
     <a class="list-group-item active" href="/blog/2014/08/06/primer-programa-bare-board/">Primer Programa Bare Board (Pt I)</a>
     
     <a class="list-group-item " href="/blog/2014/08/06/instalando-openocd/">Instalando OpenOCD</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/05/instalando-el-compilador-gnu-arm/">Instalando El Compilador GNU ARM</a>
     
   </div>
 </section>
@@ -489,7 +499,7 @@
     
     
     <a class="list-group-item " href="/blog/categories/stm32f0/index.html">
-        <span class="badge">3</span>
+        <span class="badge">4</span>
         stm32f0
       </a>
     

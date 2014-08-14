@@ -2,7 +2,7 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Primer Programa Con STM32F0Cube (Pt III) - Diego Blog</title>
+  <title>Primer Programa Con Stm32f0cube (Pt IV) - Diego Blog</title>
   <meta name="author" content="Diego">
 
   <meta name="description" content="Creacion de un primer proyecto para un micro stm32f0 utilizadno la tarjeta Nucleo-f072rb, el compilador gnu arm, openocd y la libreria STM32F0Cube de &hellip;">
@@ -14,7 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://testDiego.github.io/blog/2014/08/10/primer-programa-con-stm32f0cube">
+  <link rel="canonical" href="http://testDiego.github.io/blog/2014/08/11/primer-programa-con-stm32f0cube-ii">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="Diego Blog" type="application/atom+xml">
 
@@ -116,7 +116,7 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-10T13:30:28-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 10<sup>th</sup>, 2014</time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-11T21:13:25-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 11<sup>th</sup>, 2014</time>
         
            | <a href="#disqus_thread" itemprop="discussionUrl"
              data-disqus-identifier="http://testDiego.github.io">Comments</a>
@@ -125,89 +125,182 @@
     
     
     <h1 class="entry-title" itemprop="name headline">
-        Primer Programa Con STM32F0Cube (Pt III)
+        Primer Programa Con Stm32f0cube (Pt IV)
         
     </h1>
     
   </header>
 
 
-<div class="entry-content clearfix" itemprop="articleBody"><p>En los dos anteriores post de la serie <strong>Primer Programa</strong> hemos estado utilizando archivos pertenecientes a la librería <strong>STM32F0Cube</strong>. Esta librería es un banco de código de funciones ya preestablecidas que nos permitirán empezar a codificar nuestras aplicaciones sin conocer tan a detalle el micro que estemos usando.</p>
-
-<p>Llegó la hora de usar a fondo y sacar provecho de esas funciones, vamos a repetir el anterior ejemplo pero esta ocasión sacando provecho a librería <strong>STM32F0Cube</strong>.</p>
-
-<p>Creamos una nueva carpeta para nuestro proyecto</p>
+<div class="entry-content clearfix" itemprop="articleBody"><p>La última parte de la serie <strong>Primer Programa</strong> en la cual abordaremos un poco más de la librería <strong>STM32F0Cube</strong>. Primero que nada una explicación de lo que contiene esta librería al descomprimir el archivo <strong>zip</strong> en el que viene, te encuentras con:</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_f072_cube</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>.
+</span><span class='line'>├── Documentation
+</span><span class='line'>├── Drivers
+</span><span class='line'>├── _htmresc
+</span><span class='line'>├── Middlewares
+</span><span class='line'>├── package.xml
+</span><span class='line'>├── Projects
+</span><span class='line'>├── Release_Notes.html
+</span><span class='line'>└── Utilities</span></code></pre></td></tr></table></div></figure>
 
 
-<p>De nueva cuenta deberás copiar a la carpeta de tu proyecto el archivo linker. Recuerda lo obtienes de la librería de <strong>ST</strong> en la siguiente ruta</p>
+<h4>Drivers</h4>
+
+<p>Es uno de los directorios más importantes, en el encontramos el estándar <strong>CMSIS</strong> que contiene definidos los registros de los periféricos del micro así como los vectores de interrupción. Lo otro que encontramos de gran importancia es la librería de <strong>HAL drivers</strong> con las piezas de código que nos permitirán controlar los periféricos a través de funciones y macros ya bien definidos y probados.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/TrueSTUDIO/STM32F072RB-Nucleo/STM32F072RB_FLASH.ld</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>.
+</span><span class='line'>├── BSP
+</span><span class='line'>├── CMSIS
+</span><span class='line'>└── STM32F0xx_HAL_Driver</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Middelwares</h4>
+
+<p>Este es el segundo directorio de importancia el cual contiene librerias de codigo que nos permitiran realizar cosas mucho mas interesantes y que requieren un nivel mayor de expertis.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>.
+</span><span class='line'>├── ST
+</span><span class='line'>│   ├── STM32_TouchSensing_Library
+</span><span class='line'>│   └── STM32_USB_Device_Library
+</span><span class='line'>└── Third_Party
+</span><span class='line'>    ├── FatFs
+</span><span class='line'>    └── FreeRTOS</span></code></pre></td></tr></table></div></figure>
 
 
 <!--more-->
 
 
-<p>Antes de comenzar, aclararemos que la librería es un conjunto de piezas de código que nos permitirán controlar por completo los periféricos de nuestro microcontrolador y esta diseñada para ser compatible con la totalidad de la línea de micros <strong>STM32F0</strong> de la marca <strong>ST</strong>. Estos codigos no sera necesario que los modifiques o adaptes excepto por un archivo en especial.</p>
+<h4>Projects</h4>
 
-<p>Copia el archivo <strong>stm32f0xx_hal_conf_template.h</strong> que encontrarás en la siguiente ruta. Deberas quitarle la proteccion contra escritura y renombrarlo a <strong>stm32f0xx_hal_conf.h</strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_conf_template.h</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Con este archivo podremos controlar varias funciones de los drivers de bajo nivel ( <em>HAL drivers</em> ) de la librería. Una de las cosas que podemos controlar es la cantidad de drivers que vamos a usar</p>
-
-<p>Deberas copiar otros 2 archivos mas, que aunque estos no los vas a modificar ( <em>excepto por un pequeño detalle</em> ) es necesario tenerlos en la carpeta de tu proyecto.</p>
+<p>Aqui no encontrarás piezas de código reusables, solo unos cuantos ejemplos en los que se usa la librería para algunas tarjetas que están en el mercado entre las cuales encontramos la <strong>Nucleo-f072rb</strong></p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/startup_stm32f072xb.s
-</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/system_stm32f0xx.c</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Agregamos la siguiente linea al archivo <strong>system_stm32f0xx.c</strong>. Lo abrimos con nuestro editor de texto y escribimos lo siguiente en la <strong>linea 85</strong>.</p>
-
-<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>system_stm32f0xx.c </h3></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f0xx_hal_conf.h&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Y apartir de la <strong>linea 110</strong> escribimos.</p>
-
-<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>system_stm32f0xx.c </h3></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#if !defined  (HSI48_VALUE)</span>
-</span><span class='line'>    <span class="cp">#define HSI48_VALUE ((uint32_t)48000000)</span><span class="cm">/*!&lt; Default value of the Internal USB oscillator in Hz.</span>
-</span><span class='line'><span class="cm">                                             This value can be provided and adapted by the user application. */</span><span class="cp"></span>
-</span><span class='line'><span class="cp">#endif</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>.
+</span><span class='line'>├── STM32072B_EVAL
+</span><span class='line'>├── STM32F0308-Discovery
+</span><span class='line'>├── STM32F030R8-Nucleo
+</span><span class='line'>├── STM32F072B-Discovery
+</span><span class='line'>└── STM32F072RB-Nucleo</span></code></pre></td></tr></table></div></figure>
+
+
+<p>El resto de los directorios son documentación y alguna utileria para actualizar la propia librería.</p>
+
+<h2>Proyecto Recomendado por ST</h2>
+
+<p>En la <a href="http://testdiego.github.io/blog/2014/08/10/primer-programa-con-stm32f0cube/"><strong>tercera parte</strong></a> de esta serie de post utilizamos las funciones que vienen con esta librería, si bien nuestro programa corrió exitosamente el codigo no esta ordenado de la forma que <strong>ST</strong> nos recomendaría si estamos usando <strong>STM32F0Cube</strong>. Así que lo correcto seria lo siguiente.</p>
+
+<p>De nueva cuenta crea una nueva carpeta para nuestro proyecto</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_f072_cubeII</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Y al igual que en los anteriores deberás copiar a la carpeta de tu proyecto el archivo <strong>linker</strong>. Recuerda lo obtienes de la librería de <strong>ST</strong> en la siguiente ruta</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/TrueSTUDIO/STM32F072RB-Nucleo/STM32F072RB_FLASH.ld</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Bien, <strong>ST</strong> nos sugiere que ordenemos nuestro proyecto en dos directorios, uno donde iran los archivos headers ( <em>*.h</em> ) <strong>Inc</strong> y otro con los archivos fuente ( <em><em>.s y </em>.c</em> ) <strong>Src</strong>, asi que creamos estos directorios en nuestro proyecto.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_f072_cubeII/Inc
+</span><span class='line'>$ mkdir ~/test_f072_cubeII/Src</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Los archivos que deberán ir en cada uno de los directorios los podremos crear desde cero o copiarlos de un lugar donde ya están escritos, como un template que viene en la librería.</p>
+
+<p>Copia los siguientes archivos de la siguiente ruta en el directorio <strong>Inc</strong> de tu proyecto</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/Inc/main.h
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/Inc/stm32f0xx_hal_conf.h
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/Inc/stm32f0xx_it.h</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Y aqui la descripcion de cada uno de esos archivos</p>
+
+<ul>
+<li><strong>main.h.-</strong>Aquí colocaras las funciones, variables y/o macros que tengan carácter global y que deben referenciar otros archivos de tu programa</li>
+<li><strong>stm32f0xx_hal_conf.h.-</strong> Viejo conocido en donde configuras lo que se use y lo que no se use de la librería STM32F0Cube</li>
+<li><strong>stm32f0xx_it.h.-</strong> Aquí colocaras los prototipos de las funciones que actúan como vectores de interrupción</li>
+</ul>
+
+
+<p>Copia los siguientes archivos de la siguiente ruta en el directorio Src de tu proyecto</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/Src/main.c
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/Inc/stm32f0xx_hal_msp.c
+</span><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/Inc/stm32f0xx_it.c</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Y aqui la descripcion de cada uno de los archivos</p>
+
+<ul>
+<li><strong>main.c.-</strong> Aqui va tu aplicación. Ya contiene algunas líneas de código que ST te sugiere que tenga por default</li>
+<li><strong>stm32f0xx_hal_msp.c.-</strong> En este archivo colocaras las funciones callback que ocupes de la librería con código específico de tu aplicación</li>
+<li><strong>stm32f0xx_it.c.-</strong> Aqui van los vectores de interrupción y donde típicamente mandas llamar las funciones que se necesiten ejecutar en una interrupción</li>
+<li><strong>system_stm32f0xx.c.-</strong> Aqui se encuentra las configuraciones inciales de los reloj del sistema ( <em>ya no ocuparas hacerle cambios</em> )</li>
+</ul>
+
+
+<p>Tenemos que hacer una pequeña modificación en el archivo <strong>main.h</strong> para que nuestro proyecto no quede tan dependiente de la tarjeta <strong>Nucleo-f072rb</strong> y que quede más genérico. Abre el archivo con tu editor de texto favorito y sustituyes la <strong>línea 44</strong> por la siguiente</p>
+
+<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>main.h</h3></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f0xx.h&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Para facilitarnos un poco más las cosas copiamos por completo la carpeta de la libreria <strong>STM32F0Cube</strong> al folder de nuestro proyecto</p>
+<p>Abre el archivo <strong>main.c</strong> con tu editor de texto, podras observar bastante código ya escrito así como unos voluminosos comentarios escritos por los ingenieros de <strong>ST</strong>. No te asustes, si observamos la función main podras ver que se manda llamar la funcion ya conocida <code>HAL_Init()</code> y una nueva <code>SystemClock_Config()</code>, esta funcion cuyo cuerpo encuentras lineas mas abajo configura el reloj del sistema para uqe corra a 48MHz ( <em>velocidad maxima del micro</em> ) usando las funciones del periferico <strong>RCC</strong>.</p>
 
-<p>Como en anteriores ocasiones creamos nuestra carpeta <strong>Output</strong> donde guardaremos los archivos que nos arroja la compilación</p>
+<p>Inserta la siguiente declaracion en la <strong>linea 53</strong></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir test_f072_cube/Output</span></code></pre></td></tr></table></div></figure>
+<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>main.c </h3></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cm">/* Private variables ---------------------------------------------------------*/</span>
+</span><span class='line'><span class="k">static</span> <span class="n">GPIO_InitTypeDef</span>  <span class="n">GPIO_InitStruct</span><span class="p">;</span>
+</span><span class='line'><span class="cm">/* Private function prototypes -----------------------------------------------*/</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Creamos el archivo que contendrá nuestro código magico =).</p>
+<p>A partir de la línea  <strong>84</strong> colocaremos nuestro código y dentro del ciclo while infinito también</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ touch ~/test_f072_cube/main.c</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Abrimos con nuestro editor de texto favorito el archivo <strong>main.c</strong> y escribimos el siguiente código</p>
-
-<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>Hola Mundo STM32F0Cube - main.c </h3></figcaption>
+<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>main.c </h3></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -226,29 +319,7 @@
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f0xx.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">static</span> <span class="n">GPIO_InitTypeDef</span>  <span class="n">GPIO_InitStruct</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">HAL_Init</span><span class="p">();</span> <span class="cm">/*init HAL library and tick interrupt to 1 ms*/</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/* -1- Enable each GPIO Clock (to be able to program the configuration registers) */</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'>    <span class="cm">/* -1- Enable each GPIO Clock (to be able to program the configuration registers) */</span>
 </span><span class='line'>    <span class="n">__GPIOA_CLK_ENABLE</span><span class="p">();</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="cm">/* -2- Configure IOs in output push-pull mode to drive external LEDs */</span>
@@ -266,23 +337,25 @@
 </span><span class='line'>        <span class="cm">/* Insert delay 100 ms */</span>
 </span><span class='line'>        <span class="n">HAL_Delay</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
 </span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="nf">SysTick_Handler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">HAL_IncTick</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>El anterior programa hará parpadear el led de la tarjeta conectado al <strong>puerto A pin 5</strong>. Pero en esta tercera ocasión usando las funciones de la librería <strong>STM32F0Cube</strong>. Como pudes observar en ningún momento accedemos directamente a los registros del microcontrolador.</p>
+<p>Si eres observador notarás que la función <code>void SysTick_Handler(void)</code> ya no se encuentra en el archivo main.c. Como esta función es un vector de interrupción ahora se encuentra en el archivo <strong>stm32f0xx_it.c</strong> ( <em>linea 109</em> ).</p>
 
-<p>No entraremos en detalles (<em>aun</em>) con las funciones que encontrarás en el código ( <em>eso lo haremos más adelante</em> ). Por cierto por ahora el archivo  <strong>stm32f0xx_hal_conf.h</strong> no necesitara modificaciones.</p>
+<p>Al directorio de tu proyecto le hace falta algo ( <em>no es el makefile</em> ) y es la libreria <strong>STM32F0Cube</strong> podemos copiarla al folder de tu proyecto como en el anterior post, nada mas te recuerdo que pesa <strong>82.3 MB</strong>.</p>
 
-<p>Solo nos falta crear el archivo makefile para que make realice la compilación.</p>
+<p>La librería no está diseñada para la copies en cuanto proyecto trabajes, sino más bien la dejes en un lugar fijo y referencies sus directorios desde ese mismo lugar para todos tus proyectos.</p>
+
+<p>Puedes dejarla en donde sea que la hayas descomprimido, pero que tal si las dejas en un lugar muy estándar de linux, tu home directory ( <strong>~ </strong> ), de tal manera que tu libreria tendría el siguiente destino. Esto ayudará mucho a la portabilidad de tus proyectos.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ touch test_f072_cube/makefile</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>~/STM32Cube_FW_F0_V1.0.0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Por último, el archivo makefile para que make realice la compilación.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ touch test_f072_cubeII/makefile</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Abre el archivo en tu editor de texto y escribe el siguiente código. Recuerda usar TABs y no espacios para las indentación.</p>
@@ -347,10 +420,12 @@
 <span class='line-number'>57</span>
 <span class='line-number'>58</span>
 <span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
 </pre></td><td class='code'><pre><code class='makefile'><span class='line'><span class="nv">PROJECT</span> <span class="o">=</span> <span class="nb">test</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># archivos a compilar</span>
-</span><span class='line'><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o system_stm32f0xx.o <span class="se">\</span>
+</span><span class='line'><span class="nv">FILES</span> <span class="o">=</span> main.o startup_stm32f072xb.o system_stm32f0xx.o stm32f0xx_it.o<span class="se">\</span>
 </span><span class='line'>stm32f0xx_hal.o <span class="se">\</span>
 </span><span class='line'>stm32f0xx_hal_rcc.o stm32f0xx_hal_rcc_ex.o <span class="se">\</span>
 </span><span class='line'>stm32f0xx_hal_gpio.o <span class="se">\</span>
@@ -361,13 +436,15 @@
 </span><span class='line'><span class="nv">DEFINES</span> <span class="o">=</span> -DSTM32F072xB -DUSE_HAL_DRIVER
 </span><span class='line'>
 </span><span class='line'><span class="c"># directorios con archivos fuente (*.c y *.s)</span>
-</span><span class='line'><span class="nv">VPATH</span> <span class="o">=</span> STM32Cube_FW_F0_V1.0.0/Drivers/STM32F0xx_HAL_Driver/Src
+</span><span class='line'><span class="nv">VPATH</span> <span class="o">=</span> Src <span class="se">\</span>
+</span><span class='line'><span class="err">/home/diego/STM32Cube_FW_F0_V1.0.0/Drivers/STM32F0xx_HAL_Driver/Src</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># directorios con archivos headers (*.h)</span>
 </span><span class='line'><span class="nv">INCLUDE</span> <span class="o">=</span> -I ./ <span class="se">\</span>
-</span><span class='line'>-I STM32Cube_FW_F0_V1.0.0/Drivers/STM32F0xx_HAL_Driver/Inc <span class="se">\</span>
-</span><span class='line'>-I STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Include <span class="se">\</span>
-</span><span class='line'><span class="err">-I</span> <span class="err">STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include</span>
+</span><span class='line'>-I ./Inc <span class="se">\</span>
+</span><span class='line'>-I ~/STM32Cube_FW_F0_V1.0.0/Drivers/STM32F0xx_HAL_Driver/Inc <span class="se">\</span>
+</span><span class='line'>-I ~/STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Include <span class="se">\</span>
+</span><span class='line'><span class="err">-I</span> <span class="err">~/STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include</span>
 </span><span class='line'>
 </span><span class='line'><span class="c"># a partir de aquí no modifiques nada a menos que sepas lo que haces</span>
 </span><span class='line'><span class="c"># linker script to be use</span>
@@ -409,13 +486,13 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>En esta ocasión compilamos varios archivos fuente y tenemos un directorio con la librería completa de <strong>ST</strong>.</p>
+<p>Fijate que ahora direccionamos los directorios de la librería desde su nuevo destino que seria tu directorio de usuario <strong>ST</strong>.</p>
 
 <p>A compilar se ha dicho</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_cube
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_cubeII
 </span><span class='line'>$ make</span></code></pre></td></tr></table></div></figure>
 
 
@@ -453,9 +530,9 @@
 
 <h2>Conclusion</h2>
 
-<p>Incluir la librería completa de <strong>ST</strong> nos ayuda a no tener que conocer a fondo cómo funcionan los periféricos del microcontrolador, ahora solo tendremos que conocer a fondo cómo funciona la librería =). En general tener una librería como la <strong>STM32F0Cube</strong> representa una gran ventaja en especial si tomamos en cuenta que es compatible con toda la linea de micros de la familia <strong>STM32F0</strong>.</p>
+<p>Bastantes archivos y codigo para un simple parpadeo de un led te estarás diciendo. Tienes razon pero piensa que la librería y sobre todos el ordenar tu proyecto de esta manera esta pensando para que realices desde pequeños hasta grandes proyectos con una gran cantidad de código y archivos fuente y es en estos último cuando adquiere gran importancia ordenar bien tu código.</p>
 
-<p>Solo hay que poner un poco de esfuerzo en como configurar los códigos e indicarle de manera correcta los directorios de los archivos fuente al compilador, costará un poco de trabajo al principio pero despues te acostumbras.</p>
+<p>Un punto muy importante que <strong>ST</strong> maneja una herramienta que permite configurar la librería <strong>STM32F0Cube</strong> y generar código a partir de una <a href=""><strong>interfaz gráfica</strong></a>. dicha interfaz gráfica necesitará que tu proyecto lo tengas ordenado de esta manera.</p>
 
 <p>Para terminar te dejamos la estructura del directorio de tu proyecto</p>
 
@@ -468,17 +545,25 @@
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>.
-</span><span class='line'>├── main.c
+</span><span class='line'>├── Inc
+</span><span class='line'>│   ├── main.h
+</span><span class='line'>│   ├── stm32f0xx_hal_conf.h
+</span><span class='line'>│   └── stm32f0xx_it.h
 </span><span class='line'>├── makefile
 </span><span class='line'>├── Output/
-</span><span class='line'>├── STM32Cube_FW_F0_V1.0.0/
-</span><span class='line'>├── STM32F072RB_FLASH.ld
-</span><span class='line'>├── stm32f0xx_hal_conf.h
+</span><span class='line'>├── Src
+</span><span class='line'>│   ├── main.c
+</span><span class='line'>│   ├── stm32f0xx_hal_msp.c
+</span><span class='line'>│   ├── stm32f0xx_it.c
+</span><span class='line'>│   └── system_stm32f0xx.c
 </span><span class='line'>├── startup_stm32f072xb.s
-</span><span class='line'>└── system_stm32f0xx.c</span></code></pre></td></tr></table></div></figure>
-
-
+</span><span class='line'>└── STM32F072RB_FLASH.ld</span></code></pre></td></tr></table></div></figure>
 
 </div>
 
@@ -503,7 +588,7 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-10T13:30:28-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 10<sup>th</sup>, 2014</time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-11T21:13:25-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 11<sup>th</sup>, 2014</time>
           
 
 <span class="glyphicon glyphicon-tags"></span>&nbsp;
@@ -518,7 +603,7 @@
         
           <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://testDiego.github.io/blog/2014/08/10/primer-programa-con-stm32f0cube/" data-via="DiegoMX84" data-counturl="http://testDiego.github.io/blog/2014/08/10/primer-programa-con-stm32f0cube/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://testDiego.github.io/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/" data-via="DiegoMX84" data-counturl="http://testDiego.github.io/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/" >Tweet</a>
   
   
   
@@ -530,10 +615,8 @@
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a href="/blog/2014/08/08/primer-programa-cmsis/" title="Previous Post: Primer Programa CMSIS (pt II)">&laquo; Primer Programa CMSIS (pt II)</a></li>
+            <li class="previous"><a href="/blog/2014/08/10/primer-programa-con-stm32f0cube/" title="Previous Post: Primer Programa con STM32F0Cube (pt III)">&laquo; Primer Programa con STM32F0Cube (pt III)</a></li>
             
-            
-            <li class="next"><a href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/" title="Next Post: primer programa con stm32f0cube (pt IV)">primer programa con stm32f0cube (pt IV) &raquo;</a></li>
             
           </ul>
         
@@ -558,9 +641,9 @@
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
+    <a class="list-group-item active" href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
     
-    <a class="list-group-item active" href="/blog/2014/08/10/primer-programa-con-stm32f0cube/">Primer Programa Con STM32F0Cube (Pt III)</a>
+    <a class="list-group-item " href="/blog/2014/08/10/primer-programa-con-stm32f0cube/">Primer Programa Con STM32F0Cube (Pt III)</a>
     
     <a class="list-group-item " href="/blog/2014/08/08/primer-programa-cmsis/">Primer Programa CMSIS (Pt II)</a>
     
@@ -651,8 +734,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://testDiego.github.io/blog/2014/08/10/primer-programa-con-stm32f0cube/';
-        var disqus_url = 'http://testDiego.github.io/blog/2014/08/10/primer-programa-con-stm32f0cube/';
+        var disqus_identifier = 'http://testDiego.github.io/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/';
+        var disqus_url = 'http://testDiego.github.io/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/';
         var disqus_script = 'embed.js';
       
     (function () {
