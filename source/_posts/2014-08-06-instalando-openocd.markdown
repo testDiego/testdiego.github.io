@@ -49,9 +49,9 @@ $ sudo make install
 
 La otra carpeta importante `/usr/local/share/openocd/scripts` es donde quedarán instalados los scripts que nos servirán para identificar el micro que queremos programar y contiene la información necesaria para decirle a **OpenOCD** como programarlo, estos scripts están agrupados en tres niveles:
 
-> - **target.-** scripts con instrucciones especificas para microcontroladores/procesadores
-> - **interface.-** scripts con la informacion del debugger/programador a usar
-> - **board.-** scripts con instrucciones que combinan interface y target. Y pertenecen a tarjetas especifcas que ya estan en el mercado
+- **target.-** scripts con instrucciones especificas para microcontroladores/procesadores
+- **interface.-** scripts con la informacion del debugger/programador a usar
+- **board.-** scripts con instrucciones que combinan interface y target. Y pertenecen a tarjetas especifcas que ya estan en el mercado
 
 Antes de prenderle fuego a tu board ( _conectarla a OpenOCD_ ) deberemos registrar ciertas reglas, para que el debugger ( _ST-Link-V2-1_ ) sea reconocido por nuestro sistema. Para no entrar mas en detallas simplemente ejecuta lo siguietne en la terminal.
 ```

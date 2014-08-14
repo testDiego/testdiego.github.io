@@ -32,6 +32,26 @@ STM32Cube_FW_F0_V1.0.0/Drivers/STM32F0xx_HAL_Driver/Inc/stm32f0xx_hal_conf_templ
 
 Con este archivo podremos controlar varias funciones de los drivers de bajo nivel ( _HAL drivers_ ) de la librería. Una de las cosas que podemos controlar es la cantidad de drivers que vamos a usar  
 
+Deberas copiar otros 2 archivos mas, que aunque estos no los vas a modificar ( _excepto por un pequeño detalle_ ) es necesario tenerlos en la carpeta de tu proyecto.
+
+```
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc/startup_stm32f072xb.s
+STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/system_stm32f0xx.c
+```
+
+Agregamos la siguiente linea al archivo **system_stm32f0xx.c**. Lo abrimos con nuestro editor de texto y escribimos lo siguiente en la **linea 85**.
+{% codeblock system_stm32f0xx.c %}
+#include "stm32f0xx_hal_conf.h"
+{% endcodeblock %}
+
+Y apartir de la **linea 110** escribimos.
+{% codeblock system_stm32f0xx.c %}
+#if !defined  (HSI48_VALUE)
+    #define HSI48_VALUE ((uint32_t)48000000)/*!< Default value of the Internal USB oscillator in Hz.
+                                             This value can be provided and adapted by the user application. */
+#endif
+{% endcodeblock %}
+
 Para facilitarnos un poco más las cosas copiamos por completo la carpeta de la libreria **STM32F0Cube** al folder de nuestro proyecto
 
 Como en anteriores ocasiones creamos nuestra carpeta **Output** donde guardaremos los archivos que nos arroja la compilación
@@ -86,7 +106,7 @@ No entraremos en detalles (_aun_) con las funciones que encontrarás en el códi
 
 Solo nos falta crear el archivo makefile para que make realice la compilación.
 ```
-$ mkdir test_f072_cube/makefile
+$ touch test_f072_cube/makefile
 ```
 
 Abre el archivo en tu editor de texto y escribe el siguiente código. Recuerda usar TABs y no espacios para las indentación.
@@ -105,9 +125,7 @@ stm32f0xx_hal_flash.o
 DEFINES = -DSTM32F072xB -DUSE_HAL_DRIVER
 
 # directorios con archivos fuente (*.c y *.s)
-VPATH = STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates \
-STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Device/ST/STM32F0xx/Source/Templates/gcc \
-STM32Cube_FW_F0_V1.0.0/Drivers/STM32F0xx_HAL_Driver/Src
+VPATH = STM32Cube_FW_F0_V1.0.0/Drivers/STM32F0xx_HAL_Driver/Src
 
 # directorios con archivos headers (*.h)
 INCLUDE = -I ./ \
@@ -116,7 +134,8 @@ INCLUDE = -I ./ \
 -I STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include
 
 # a partir de aquí no modifiques nada a menos que sepas lo que haces
-LINKERFILE = STM32F072RB_FLASH.ld # linker script to be use
+# linker script to be use
+LINKERFILE = STM32F072RB_FLASH.ld 
 CPU = -mcpu=cortex-m0 -mthumb -mlittle-endian
 
 AS = arm-none-eabi-as
@@ -125,7 +144,7 @@ LD = arm-none-eabi-gcc
 OD = arm-none-eabi-objdump
 OC = arm-none-eabi-objcopy
 
-CCFLAGS = $(CPU) $(DEFINES) -Wall -fno-common -O0 -fomit-frame-pointer -Wstrict-prototypes -fverbose-asm $(INCLUDE)
+CCFLAGS = $(CPU) $(DEFINES) $(INCLUDE) -Wall -fno-common -O0 -fomit-frame-pointer -Wstrict-prototypes -fverbose-asm 
 ASFLAGS = $(CPU)
 LDFLAGS = $(CPU) -Wl,--gc-sections
 OCFLAGS = -Oihex
@@ -167,20 +186,22 @@ Si la terminal no arrojo ningun error deberemos tener nuestro archivo **test.hex
 A Programar se ha dicho
 -----------------------
 
-Abre una nueva terminal y conéctate con tu tarjeta usando **OpenOCD**
+Abre una nueva terminal y conectate con tu tarjeta usando OpenOCD
 ```
+$ cd ~/test_f072_cube  #Recomendacion, siempre estar en el directorio de tu proyecto
 $ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
 ```
 
-En la terminal anterior mandaremos nuestro programa compilado a nuestra tarjeta usando **telnet**, conéctate al puerto 4444 de la siguiente manera
+En la terminal anterior madaremos nuestro programa compilado a nuestra tarjeta usando **telnet**, conectate al puerto **4444** de la siguiente manera
 ```
+$ cd ~/test_f072_cube #Recomendacion, siempre estar en el directorio de tu proyecto
 $ telnet localhost 4444
 ```
 
-Si te acepta la coneccion, solo resta mandar el archivo .hex, escribe los siguientes comandos en orden
+Si te acepta la conexion, solo restara mandar el archivo **.hex**. Escribe los siguientes comandos en orden
 ```
 reset halt
-flash write_image erase test.hex
+flash write_image erase Output/test.hex
 reset run
 ```
 
@@ -193,7 +214,7 @@ Incluir la librería completa de **ST** nos ayuda a no tener que conocer a fondo
 
 Solo hay que poner un poco de esfuerzo en como configurar los códigos e indicarle de manera correcta los directorios de los archivos fuente al compilador, costará un poco de trabajo al principio pero despues te acostumbras.
 
-Para terminar te dejamos la estrucutra del directorio de tu proyecto
+Para terminar te dejamos la estructura del directorio de tu proyecto
 ```
 .
 ├── main.c
@@ -201,7 +222,8 @@ Para terminar te dejamos la estrucutra del directorio de tu proyecto
 ├── Output/
 ├── STM32Cube_FW_F0_V1.0.0/
 ├── STM32F072RB_FLASH.ld
-└── stm32f0xx_hal_conf.h
-
+├── stm32f0xx_hal_conf.h
+├── startup_stm32f072xb.s
+└── system_stm32f0xx.c
 ```
 

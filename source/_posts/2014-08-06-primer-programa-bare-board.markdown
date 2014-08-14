@@ -48,7 +48,7 @@ $ touch ~/test_f072/main.c
 Escribiendo el codigo
 ----------------------
 
-Habre el archivo con tu editor de texto favorito ( _como Gedit_ ) y escribe el siguiente codigo
+Abre el archivo con tu editor de texto favorito ( _como Gedit_ ) y escribe el siguiente codigo
 {% codeblock Hola Mundo - main.c %}
 #define LED_PIN 5
 
@@ -82,14 +82,17 @@ Crea un nuevo archivo llamado makefile en la carpeta de tu proeycto
 $ touch ~/test_f072/makefile
 ```
 
-Habre este nuevo archivo con tu editor de texto favorito ( _digamos atom_ ) y escribe lo siguiente
+Abre este nuevo archivo con tu editor de texto favorito ( _digamos atom_ ) y escribe lo siguiente
 {% codeblock makefile lang:makefile %}
-PROJECT = test  #Nombre que desees para tu proyecto
+# Nombre que desees para tu proyecto
+PROJECT = test  
 
-FILES = main.o startup_stm32f072xb.o #archivos fuente a compilar
+# Archivos fuente a compilar
+FILES = main.o startup_stm32f072xb.o 
 
 # Apartir de aqui no modifiques nada a menos que sepas lo que hases. ;)
-LINKERFILE = STM32F072RB_FLASH.ld # linker script a usar
+# linker script a usar
+LINKERFILE = STM32F072RB_FLASH.ld 
 CPU = -mcpu=cortex-m0 -mthumb -mlittle-endian
 
 AS = arm-none-eabi-as
@@ -140,20 +143,22 @@ Si la terminal no te arrojo ningun error de compilacion deberas tener un archivo
 A Programar se ha dicho
 -----------------------
 
-Habre una nueva terminal y conectate con tu tarjeta usando OpenOCD
+Abre una nueva terminal y conectate con tu tarjeta usando OpenOCD
 ```
+$ cd ~/test_f072  #Recomendacion, siempre estar en el directorio de tu proyecto
 $ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
 ```
 
 En la terminal anterior madaremos nuestro programa compilado a nuestra tarjeta usando **telnet**, conectate al puerto **4444** de la siguiente manera
 ```
+$ cd ~/test_f072 #Recomendacion, siempre estar en el directorio de tu proyecto
 $ telnet localhost 4444
 ```
 
-Si te acepta la coneccion, solo restara mandar el archivo **.hex**. Escribe los siguientes comandos en orden
+Si te acepta la conexion, solo restara mandar el archivo **.hex**. Escribe los siguientes comandos en orden
 ```
 reset halt
-flash write_image erase test.hex
+flash write_image erase Output/test.hex
 reset run
 ```
 
@@ -161,7 +166,7 @@ El primer comando resetea y detiene al micro, el segundo manda el programa y lo 
 
 Esta manera de programar ( _sin ayuda alguna_ ) te obligara a leer bien la hoja de datos del micro y en consecuencia aprenderas muy bien a utilizar la maquina que estas usando, pero te costara buenas desveladas y canas verdes.
 
-Para terminar te dejamos la estrucutra del directorio de tu proyecto
+Para terminar te dejamos la estructura del directorio de tu proyecto
 ```
 .
 ├── main.c

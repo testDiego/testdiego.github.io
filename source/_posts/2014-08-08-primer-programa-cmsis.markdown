@@ -39,9 +39,22 @@ STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cmFunc.h
 STM32Cube_FW_F0_V1.0.0/Drivers/CMSIS/Include/core_cmInstr.h
 ```
 
-Antes de seguir avanzando, aclararemos que el archivo **startup** no le haremos ninguna modificación y que los archivos **system** nos permiten inicializar algunas pequeñas cosas del micro, como los relojes de las memorias.
+Antes de seguir avanzando, aclararemos que al archivo **startup** no le haremos ninguna modificación y que los archivos **system** nos permiten inicializar algunas pequeñas cosas del micro, como los relojes de las memorias.
 
-Bien, creamos nuestra carpeta **Output** donde guardaremos los archivos que nos arroja la compilación
+Al que si modificaremos es al archivo **system_stm32f0xx.c**, Lo abrimos con nuestro editor de texto y escribimos lo siguiente apartir de la **linea 110**.
+{% codeblock system_stm32f0xx.c %}
+#if !defined  (HSI48_VALUE)
+    #define HSI48_VALUE ((uint32_t)48000000)/*!< Default value of the Internal USB oscillator in Hz.
+                                             This value can be provided and adapted by the user application. */
+#endif
+{% endcodeblock %}
+
+y modificamos la **linea 84** de la siguiente manera
+{% codeblock system_stm32f0xx.c %}
+#include "stm32f072xb.h"
+{% endcodeblock %}
+
+Creamos nuestra carpeta **Output** donde guardaremos los archivos que nos arroja la compilación
 ```
 $ mkdir test_f072_CMSIS/Output
 ```
@@ -84,21 +97,26 @@ Estos registros los encuentras definidos en el archivo **stm32f072xb.h**. Las de
 
 Solo nos falta crear el archivo makefile para que make realice la compilación.
 ```
-$ mkdir test_f072_CMSIS/makefile
+$ touch test_f072_CMSIS/makefile
 ```
 
 Abre el archivo en tu editor de texto y escribe el siguiente código. Recuerda usar TABs y no espacios para las indentación.
 {% codeblock makefile lang:makefile %}
-PROJECT = test  #Nombre que desees para tu proyecto
+#Nombre que desees para tu proyecto
+PROJECT = test  
 
-FILES = main.o startup_stm32f072xb.o system_stm32f0xx.o #archivos a compilar
+#archivos a compilar
+FILES = main.o startup_stm32f072xb.o system_stm32f0xx.o 
 
-VPATH = system #directorio con archivos a compilar (*.c, *.s)
+#directorio con archivos a compilar (*.c, *.s)
+VPATH = system 
 
-INCLUDES = -I system #directorio con archivos headers (*.h)
+#directorio con archivos headers (*.h)
+INCLUDES = -I system 
 
 # Apartir de aqui no modifiques nada a menos que sepas lo que hases. ;)
-LINKERFILE = STM32F072RB_FLASH.ld # linker script a usar
+# linker script a usar
+LINKERFILE = STM32F072RB_FLASH.ld 
 CPU = -mcpu=cortex-m0 -mthumb -mlittle-endian
 
 AS = arm-none-eabi-as
@@ -149,20 +167,22 @@ Si la terminal no arrojo ningun error deberemos tener nuestro archivo **test.hex
 A Programar se ha dicho
 ----------------------
 
-Abre una nueva terminal y conéctate con tu tarjeta usando OpenOCD
+Abre una nueva terminal y conectate con tu tarjeta usando OpenOCD
 ```
+$ cd ~/test_f072_CMSIS  #Recomendacion, siempre estar en el directorio de tu proyecto
 $ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
 ```
 
-En la terminal anterior mandaremos nuestro programa compilado a nuestra tarjeta usando **telnet**, conéctate al puerto 4444 de la siguiente manera
+En la terminal anterior madaremos nuestro programa compilado a nuestra tarjeta usando **telnet**, conectate al puerto **4444** de la siguiente manera
 ```
+$ cd ~/test_f072_CMSIS #Recomendacion, siempre estar en el directorio de tu proyecto
 $ telnet localhost 4444
 ```
 
-Si te acepta la coneccion, solo resta mandar el archivo .hex, escribe los siguientes comandos en orden
+Si te acepta la conexion, solo restara mandar el archivo **.hex**. Escribe los siguientes comandos en orden
 ```
 reset halt
-flash write_image erase test.hex
+flash write_image erase Output/test.hex
 reset run
 ```
 
@@ -175,7 +195,7 @@ Incluir los archivos que nos indica el estándar **CMSIS** nos facilita la inter
 
 Lo único que no nos exenta es el hecho de configurar los periféricos del micro de manera manual sin la ayuda de ningún framework o librería.
 
-Para terminar te dejamos la estrucutra del directorio de tu proyecto
+Para terminar te dejamos la estructura del directorio de tu proyecto
 ```
 .
 ├── main.c
