@@ -29,7 +29,7 @@ Es uno de los directorios más importantes, en el encontramos el estándar **CMS
 ├── CMSIS
 └── STM32F0xx_HAL_Driver
 ```
-
+<!--more-->
 ####Middelwares
 Este es el segundo directorio de importancia el cual contiene librerias de codigo que nos permitiran realizar cosas mucho mas interesantes y que requieren un nivel mayor de expertis.
 ```
@@ -41,7 +41,7 @@ Este es el segundo directorio de importancia el cual contiene librerias de codig
     ├── FatFs
     └── FreeRTOS
 ```
-<!--more-->
+
 ####Projects
 Aqui no encontrarás piezas de código reusables, solo unos cuantos ejemplos en los que se usa la librería para algunas tarjetas que están en el mercado entre las cuales encontramos la **Nucleo-f072rb**
 ```
@@ -239,13 +239,13 @@ A Programar se ha dicho
 
 Abre una nueva terminal y conectate con tu tarjeta usando OpenOCD
 ```
-$ cd ~/test_f072_cube  #Recomendacion, siempre estar en el directorio de tu proyecto
+$ cd ~/test_f072_cubeII  #Recomendacion, siempre estar en el directorio de tu proyecto
 $ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
 ```
 
 En la terminal anterior madaremos nuestro programa compilado a nuestra tarjeta usando **telnet**, conectate al puerto **4444** de la siguiente manera
 ```
-$ cd ~/test_f072_cube #Recomendacion, siempre estar en el directorio de tu proyecto
+$ cd ~/test_f072_cubeII #Recomendacion, siempre estar en el directorio de tu proyecto
 $ telnet localhost 4444
 ```
 
@@ -263,7 +263,7 @@ Conclusion
 
 Bastantes archivos y codigo para un simple parpadeo de un led te estarás diciendo. Tienes razon pero piensa que la librería y sobre todos el ordenar tu proyecto de esta manera esta pensando para que realices desde pequeños hasta grandes proyectos con una gran cantidad de código y archivos fuente y es en estos último cuando adquiere gran importancia ordenar bien tu código.
 
-Un punto muy importante que **ST** maneja una herramienta que permite configurar la librería **STM32F0Cube** y generar código a partir de una [**interfaz gráfica**](). dicha interfaz gráfica necesitará que tu proyecto lo tengas ordenado de esta manera.
+Un punto muy importante que **ST** maneja una herramienta que permite configurar la librería **STM32F0Cube** y generar código a partir de una [**interfaz gráfica**](http://www.st.com/web/en/catalog/tools/PF259242). dicha interfaz gráfica necesitará que tu proyecto lo tengas ordenado de esta manera.
 
 Para terminar te dejamos la estructura del directorio de tu proyecto
 ```
