@@ -4,7 +4,7 @@
   <title><![CDATA[Diego Blog]]></title>
   <link href="http://testDiego.github.io/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-13T19:21:42-07:00</updated>
+  <updated>2014-08-14T13:24:02-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -12,6 +12,123 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Programando Con OpenOCD]]></title>
+    <link href="http://testDiego.github.io/blog/2014/08/13/programando-con-openocd/"/>
+    <updated>2014-08-13T20:39:06-07:00</updated>
+    <id>http://testDiego.github.io/blog/2014/08/13/programando-con-openocd</id>
+    <content type="html"><![CDATA[<p>Existen diferentes maneras en que podemos programar nuestro microcontrolador usando <strong>OpenOCD</strong>, ( <em>una muestra de su versatilidad</em> ), y en este nuevo post examinaremos algunas de ellas, quedara en ti escoger la más adecuada para tu sistema de trabajo.</p>
+
+<p>Antes que nada y para simplificar un poco utilizaremos el programa que creamos en el post <a href="http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board"><strong>Primer Programa Bare Board</strong></a> y daremos por echo que ya esta correctamente compilado y tenemos los archivos tets.elf y test.hex generados en el subfolder Output.</p>
+
+<h2>Usando Telnet</h2>
+
+<p>Esta opción ya la hemos manejado en los anteriores post, pero no está de más incluirla aquí. Primero que nada tendrás que conectarte a tu tarjeta con <strong>OpenOCD</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en alcarpeta del proyecto
+</span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<!--more-->
+
+
+<p>Recuerda que debes indicar la interfaz que manejas ( <em>en este caso stlink</em> ) y el micro a programar ( <em>en este caso stm32f0</em> ). Y eso es lo que se hace en el código de arriba.</p>
+
+<p>Por default <strong>OpenOCD</strong> estará escuchando en el <strong>puerto 4444</strong> para aceptar conexiones por <strong>telnet</strong>, así que lo siguiente es usar el programa <strong>telnet</strong> para conectarnos a ese mismo puerto. En otra terminal escribimos</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en la carpeta del proyecto
+</span><span class='line'>$ telnet localhost 4444</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Notamos como <strong>OpenOCD</strong> nos acepta la conexión, con lo cual estamos listos para mandarle comandos y que este los ejecute. Puedes investigar cuales son los comandos que acepta <strong>OpenOCD</strong> leyendo su manual de usuario.</p>
+
+<p>Para programar la memoria del micro se usarán los siguientes</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>reset halt
+</span><span class='line'>flash write_image erase Output/test.hex
+</span><span class='line'>reset run
+</span><span class='line'>exit</span></code></pre></td></tr></table></div></figure>
+
+
+<p>El primer comando resetea y detiene al micro, el segundo manda el programa y lo escribe en la memoria y el último lo resetea y pone a correr el programa, asi que ya podras ver un feliz led parpadeando.</p>
+
+<h2>Usando solo OpenOCD</h2>
+
+<p>Se puede usar únicamente <strong>OpenOCD</strong> sin necesitar de un programa externo como <strong>telnet</strong> para programar el micro. Simplemente le debes pasar algunos comandos a <strong>OpenOCD</strong> al momento de invocarlo</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en la carpeta del proyecto
+</span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg -c "program Output/test.hex verify reset"</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Si observas bien puedes darte cuenta que con la bandera <code>-c</code> puedes pasar comandos a <strong>OpenOCD</strong>. En este caso le estamos indicando que programe el micro con el archivo <strong>.hex</strong> <code>Output/test.hex</code> y que después de hacer la programación realice una verificación y un reset.</p>
+
+<p>Esta nueva forma hace que <strong>OpenOCD</strong> se conecte a nuestro micro, cargue el programa, lo verifique y ponga correr el programa para después desconectarse de la tarjeta.</p>
+
+<h2>Usando Archivos .cfg con OpenOCD</h2>
+
+<p>El anterior método resultó ser mucho más corto y sencillo que el anterior con <strong>telnet</strong>, pero en contra está la kilométrica línea con la que debemos invocar <strong>OpenOCD</strong> desde la terminal. Lo cual lo hace bastante engorroso y fácil de cometer equivocaciones.</p>
+
+<p>Para evitar lo anterior escribiremos los argumentos con los que invocamos <strong>OpenOCD</strong> en un archivo <code>.cfg</code> ( <em>que son los que entiende OpenOCD</em> ) así que en la misma carpeta de tu proyecto crea el archivo <strong>openocd.cfg</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ touch ~/test_f072/openocd.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Abre el archivo recién creado con tu editor de texto favorito y escribe lo siguiente</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Indicamos que usaremos stlink como programador
+</span><span class='line'>source [find interface/stlink-v2-1.cfg]
+</span><span class='line'>
+</span><span class='line'># Indicamos que es micro Cortex-M0 de la marca ST
+</span><span class='line'>source [find target/stm32f0x_stlink.cfg]
+</span><span class='line'>
+</span><span class='line'># Programamos el archivo "test.hex" que se encuentra en la carpeta
+</span><span class='line'># Output de nuestro proyecto y despues verificamos y damos un reset
+</span><span class='line'>program Output/test.hex verify reset
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ahora tenemos los anteriores parámetros escritos en un archivo en la carpeta de nuestro proyecto, con lo cual invocar <strong>OpenOCD</strong> se vuelve mas sencillo. Solo escribimos</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en la carpeta del proyecto
+</span><span class='line'>$ sudo openocd -f openocd.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Como puedes ver a <strong>OpenOCD</strong> lo invocamos pasando el nombre del archivo que contiene los comandos que se deben ejecutar al conectarse a nuestra tarjeta. Un metodo simple y rápido, que nos da pie a crear formas más flexibles de conectarnos y programar nuestros dispositivos.</p>
+
+<h2>Conclusion</h2>
+
+<p>Como puedes ver unas opciones parecen ser mejores que otras. Bueno eso dependerá de la forma que uses <strong>OpenOCD</strong>. Con telnet tienes una opción poderosa para realizar conexiones remotas, que tal si tu boards se encuentra conectado a una máquina diferente.</p>
+
+<p>Y por otra parte los archivos <code>.cfg</code> son una herramienta poderosa al momento de crear diferentes configuraciones para acceder a tu tarjeta.</p>
+
+<p>Así que escoge sabiamente ;) y si quieres mas información consulta el <strong>Manual de usuario de OpenOCD</strong></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Primer Programa Con Stm32f0cube (Pt IV)]]></title>
@@ -54,6 +171,9 @@
 </span><span class='line'>└── STM32F0xx_HAL_Driver</span></code></pre></td></tr></table></div></figure>
 
 
+<!--more-->
+
+
 <h4>Middelwares</h4>
 
 <p>Este es el segundo directorio de importancia el cual contiene librerias de codigo que nos permitiran realizar cosas mucho mas interesantes y que requieren un nivel mayor de expertis.</p>
@@ -72,9 +192,6 @@
 </span><span class='line'>└── Third_Party
 </span><span class='line'>    ├── FatFs
 </span><span class='line'>    └── FreeRTOS</span></code></pre></td></tr></table></div></figure>
-
-
-<!--more-->
 
 
 <h4>Projects</h4>

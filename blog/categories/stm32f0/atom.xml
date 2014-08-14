@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Stm32f0 | Diego Blog]]></title>
   <link href="http://testDiego.github.io/blog/categories/stm32f0/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-13T19:21:42-07:00</updated>
+  <updated>2014-08-14T13:24:02-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -41,6 +41,9 @@
 └── STM32F0xx_HAL_Driver
 </code></p>
 
+<!--more-->
+
+
 <h4>Middelwares</h4>
 
 <p>Este es el segundo directorio de importancia el cual contiene librerias de codigo que nos permitiran realizar cosas mucho mas interesantes y que requieren un nivel mayor de expertis.
@@ -53,9 +56,6 @@
     ├── FatFs
     └── FreeRTOS
 </code></p>
-
-<!--more-->
-
 
 <h4>Projects</h4>
 
