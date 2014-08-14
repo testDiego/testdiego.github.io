@@ -4,7 +4,7 @@
   <title><![CDATA[Diego Blog]]></title>
   <link href="http://testDiego.github.io/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-13T17:24:09-07:00</updated>
+  <updated>2014-08-13T19:21:42-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -390,7 +390,7 @@
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_cube  #Recomendacion, siempre estar en el directorio de tu proyecto
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_cubeII  #Recomendacion, siempre estar en el directorio de tu proyecto
 </span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
 
 
@@ -398,7 +398,7 @@
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_cube #Recomendacion, siempre estar en el directorio de tu proyecto
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_cubeII #Recomendacion, siempre estar en el directorio de tu proyecto
 </span><span class='line'>$ telnet localhost 4444</span></code></pre></td></tr></table></div></figure>
 
 
@@ -418,7 +418,7 @@
 
 <p>Bastantes archivos y codigo para un simple parpadeo de un led te estarás diciendo. Tienes razon pero piensa que la librería y sobre todos el ordenar tu proyecto de esta manera esta pensando para que realices desde pequeños hasta grandes proyectos con una gran cantidad de código y archivos fuente y es en estos último cuando adquiere gran importancia ordenar bien tu código.</p>
 
-<p>Un punto muy importante que <strong>ST</strong> maneja una herramienta que permite configurar la librería <strong>STM32F0Cube</strong> y generar código a partir de una <a href=""><strong>interfaz gráfica</strong></a>. dicha interfaz gráfica necesitará que tu proyecto lo tengas ordenado de esta manera.</p>
+<p>Un punto muy importante que <strong>ST</strong> maneja una herramienta que permite configurar la librería <strong>STM32F0Cube</strong> y generar código a partir de una <a href="http://www.st.com/web/en/catalog/tools/PF259242"><strong>interfaz gráfica</strong></a>. dicha interfaz gráfica necesitará que tu proyecto lo tengas ordenado de esta manera.</p>
 
 <p>Para terminar te dejamos la estructura del directorio de tu proyecto</p>
 
