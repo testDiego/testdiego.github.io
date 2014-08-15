@@ -89,13 +89,21 @@ $ sudo openocd -f openocd.cfg
 
 Como puedes ver a **OpenOCD** lo invocamos pasando el nombre del archivo que contiene los comandos que se deben ejecutar al conectarse a nuestra tarjeta. Un metodo simple y rápido, que nos da pie a crear formas más flexibles de conectarnos y programar nuestros dispositivos.
 
+Antes de terminar!!. ¿Porque nombramos a nuestro arcgivo `.cfg` con el nombre de `openocd`?, ¿por puro gusto?, ¿simple coincidencia?. No, fue intencional y es que resulta que **OpenOCD** por default se ejecutara con el archivo llamado `openocd.cfg` que se encuentre en el directorio en el que fue invocado. 
+
+Asi que podemos simplifar lo anterior aun mas
+```
+$ cd ~/test_f072 #recuerda que debemos estar en la carpeta del proyecto
+$ sudo openocd
+```
+
 
 Conclusion
 ----------
 
 Como puedes ver unas opciones parecen ser mejores que otras. Bueno eso dependerá de la forma que uses **OpenOCD**. Con telnet tienes una opción poderosa para realizar conexiones remotas, que tal si tu boards se encuentra conectado a una máquina diferente.
 
-Y por otra parte los archivos `.cfg` son una herramienta poderosa al momento de crear diferentes configuraciones para acceder a tu tarjeta.
+Y por otra parte los archivos `.cfg` son una herramienta poderosa al momento de crear diferentes configuraciones para acceder a tu tarjeta. Como sugrerencia crea el archivo `openocd.cfg` en la carpeta de cada proyecto en el que trabajes y veras como te ahorras tiempo al programar.
 
-Así que escoge sabiamente ;) y si quieres mas información consulta el **Manual de usuario de OpenOCD**
+Si quieres mas información consulta el **Manual de usuario de OpenOCD**
 
