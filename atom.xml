@@ -4,7 +4,7 @@
   <title><![CDATA[Diego Blog]]></title>
   <link href="http://testDiego.github.io/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-14T13:24:02-07:00</updated>
+  <updated>2014-08-14T23:06:05-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -120,13 +120,23 @@
 
 <p>Como puedes ver a <strong>OpenOCD</strong> lo invocamos pasando el nombre del archivo que contiene los comandos que se deben ejecutar al conectarse a nuestra tarjeta. Un metodo simple y rápido, que nos da pie a crear formas más flexibles de conectarnos y programar nuestros dispositivos.</p>
 
+<p>Antes de terminar!!. ¿Porque nombramos a nuestro arcgivo <code>.cfg</code> con el nombre de <code>openocd</code>?, ¿por puro gusto?, ¿simple coincidencia?. No, fue intencional y es que resulta que <strong>OpenOCD</strong> por default se ejecutara con el archivo llamado <code>openocd.cfg</code> que se encuentre en el directorio en el que fue invocado.</p>
+
+<p>Asi que podemos simplifar lo anterior aun mas</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en la carpeta del proyecto
+</span><span class='line'>$ sudo openocd</span></code></pre></td></tr></table></div></figure>
+
+
 <h2>Conclusion</h2>
 
 <p>Como puedes ver unas opciones parecen ser mejores que otras. Bueno eso dependerá de la forma que uses <strong>OpenOCD</strong>. Con telnet tienes una opción poderosa para realizar conexiones remotas, que tal si tu boards se encuentra conectado a una máquina diferente.</p>
 
-<p>Y por otra parte los archivos <code>.cfg</code> son una herramienta poderosa al momento de crear diferentes configuraciones para acceder a tu tarjeta.</p>
+<p>Y por otra parte los archivos <code>.cfg</code> son una herramienta poderosa al momento de crear diferentes configuraciones para acceder a tu tarjeta. Como sugrerencia crea el archivo <code>openocd.cfg</code> en la carpeta de cada proyecto en el que trabajes y veras como te ahorras tiempo al programar.</p>
 
-<p>Así que escoge sabiamente ;) y si quieres mas información consulta el <strong>Manual de usuario de OpenOCD</strong></p>
+<p>Si quieres mas información consulta el <strong>Manual de usuario de OpenOCD</strong></p>
 ]]></content>
   </entry>
   
