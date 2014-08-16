@@ -120,6 +120,69 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-06T16:17:22-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 6<sup>th</sup>, 2014</time>
+        
+           | <a href="/blog/2014/08/06/primer-programa-bare-board/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/06/primer-programa-bare-board/">Comments</a>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/06/primer-programa-bare-board/" itemprop="url">Primer Programa Bare Board (Pt I)</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p>Con nuestro compilador instalado y <strong>OpenOCD</strong> listo para comunicarse con nuestra tarjeta <strong>Nucleo-F072RB</strong>, llego la hora de crear nuestro programa <em>hola mundo</em>. Antes que nada aclararemos que no usaremos ningun IDE en especifico, para escribir el codigo usaremos cualquier editor de texto plano ( <em>te recomiendo Sublime Text</em> ) y la compilacion la realizaremos usando archivos <strong>makefiles</strong> y la <strong>terminal</strong>.</p>
+
+<p>El programa lo realizaremos sin el uso de ninguna libreria de funciones ( <em>just balls!!!</em> ), pero si nesecitaremos un par de archivos de apoyo y los optendremos de la libreria oficial <a href="http://www.st.com/web/en/catalog/tools/PF260612"><strong>STM32F0Cube</strong></a> de ST. Descarga el archivo y descomprimelo en tu lugar favorito de la computadora =).</p>
+
+<p>Crea una carpeta donde estara tu flamante y nuevo programa de prueba</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_f072
+</span><span class='line'>$ cd ~/test_f072</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Copia a la carpeta de tu proyecto el archivo <strong>linker</strong>, el cual permitira a tu programa saber como esta ordenada la memoria del micro. El archivo se encuentra en la libreria de <strong>ST</strong> en la siguiente ruta:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/TrueSTUDIO/STM32F072RB-Nucleo/STM32F072RB_FLASH.ld</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a class="btn btn-default" href="/blog/2014/08/06/primer-programa-bare-board/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-06T11:54:37-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 6<sup>th</sup>, 2014</time>
         
            | <a href="/blog/2014/08/06/instalando-openocd/#disqus_thread" itemprop="discussionUrl"
@@ -242,6 +305,8 @@
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB</a>
+    
     <a class="list-group-item " href="/blog/2014/08/13/programando-con-openocd/">Programando Con OpenOCD</a>
     
     <a class="list-group-item " href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
@@ -249,8 +314,6 @@
     <a class="list-group-item " href="/blog/2014/08/10/primer-programa-con-stm32f0cube/">Primer Programa Con STM32F0Cube (Pt III)</a>
     
     <a class="list-group-item " href="/blog/2014/08/08/primer-programa-cmsis/">Primer Programa CMSIS (Pt II)</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/06/primer-programa-bare-board/">Primer Programa Bare Board (Pt I)</a>
     
   </div>
 </section>
@@ -262,7 +325,7 @@
     
     
     <a class="list-group-item " href="/blog/categories/arm-tools/index.html">
-        <span class="badge">3</span>
+        <span class="badge">4</span>
         arm tools
       </a>
     

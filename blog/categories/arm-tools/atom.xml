@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Arm Tools | Diego Blog]]></title>
   <link href="http://testDiego.github.io/blog/categories/arm-tools/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-14T23:06:05-07:00</updated>
+  <updated>2014-08-15T17:16:42-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -12,6 +12,172 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Debugging Con OpenOCD Y GDB]]></title>
+    <link href="http://testDiego.github.io/blog/2014/08/14/debugging-con-openocd-y-gdb/"/>
+    <updated>2014-08-14T23:12:51-07:00</updated>
+    <id>http://testDiego.github.io/blog/2014/08/14/debugging-con-openocd-y-gdb</id>
+    <content type="html"><![CDATA[<p>Llegó el momento de sacar mayor provecho al programador de nuestra tarjeta y es que nos solo sirve para programar. <strong>ST-Link</strong> nos sirve para depurar nuestro programa, realizar cosas como ejecuciones paso a paso, colocar breakpoints, revisar el contenido de una variable o registro, etc.</p>
+
+<p>Antes de empezar deberemos tener un proyecto con el cual trabajar, así que tomaremos el proyecto del post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Asegúrate de que compile sin errores ( <em>puedes probarlo antes en la tarjeta</em> ).</p>
+
+<p>Bien, hora de conectarse a nuestra <strong>Nucleo-f072</strong> usando <strong>OpenOCD</strong>
+<code>
+$ cd ~/test_f072 #recuerda que debemos estar en la carpeta del proyecto
+$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
+</code></p>
+
+<p>Wow!! Espera un segundo, mejor en vez de hacerlo de la manera tradicional, escribamos un archivo <strong>.cfg</strong> con las instrucciones para que <strong>OpenOCD</strong> se conecte. Si ya te conectaste solo presiona <code>Ctrl+C</code> para desconectarte.</p>
+
+<p>En la misma carpeta de tu proyecto crea el archivo <strong>openocd.cfg</strong>
+<code>
+$ touch ~/test_f072_CMSIS/openocd.cfg
+</code></p>
+
+<p>Abre el archivo recién creado con tu editor de texto favorito y escribe lo siguiente
+&#8220;`</p>
+
+<h1>Indicamos que usaremos stlink como programador</h1>
+
+<p>source [find interface/stlink-v2-1.cfg]</p>
+
+<h1>Indicamos que es micro Cortex-M0 de la marca ST</h1>
+
+<p>source [find target/stm32f0x_stlink.cfg]</p>
+
+<h1>usamos hardware reset, para conectarnos solo bajo reset</h1>
+
+<p>reset_config srst_only srst_nogate
+&#8220;`</p>
+
+<p>Ahora si, nos conectamos usando <strong>OpenOCD</strong> y el archivo que acabamos de crear.
+<code>
+$ cd ~/test_f072_CMSIS #recuerda que debemos estar en la carpeta del proyecto
+$ sudo openocd
+</code></p>
+
+<p>Si tienes dudas de lo anterior, solo recuerda que lo explicamos en el anterior post <a href="http://testdiego.github.io/blog/2014/08/13/programando-con-openocd/"><strong>Programando con OpenOCD</strong></a>.</p>
+
+<h2>Usando GDB</h2>
+
+<p>GDB es uno de los programas que vienen con tu compilador <strong>GNU ARM</strong> el cual instalaste en el <a href="http://testdiego.github.io/blog/2014/08/05/instalando-el-compilador-gnu-arm/"><strong>primer post</strong></a> y basicamente nos servira para ejecutar nuestro programa de manera guiada por asi decirlo. Solo continua con las instrucciones y te daras cuenta a que me refiero.</p>
+
+<p>Abrimos otra terminal y en ella ejecutaremos <strong>gdb</strong> invocando el archivo <strong>.elf</strong> que nos arrojó la compilación de nuestro proyecto ( <em>Revisa la carpeta Output de tu proyecto</em> )
+<code>
+$ cd ~/test_f072_CMSIS #recuerda que debemos estar en la carpeta del proyecto
+$ arm-none-eabi-gdb Output/test.elf
+</code></p>
+
+<p><strong>gdb</strong> nos arrojará la siguiente información por pantalla.
+<code>
+GNU gdb (GNU Tools for ARM Embedded Processors) 7.6.0.20131129-cvs
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "--host=i686-linux-gnu --target=arm-none-eabi".
+For bug reporting instructions, please see:
+&lt;http://www.gnu.org/software/gdb/bugs/&gt;...
+Reading symbols from /home/diego/test_f072_CMSIS/Output/test.elf...done.
+(gdb)
+</code></p>
+
+<p>En la terminal tendremos el prompt correspondiente a <strong>gdb</strong> el cual nos indica que se esta ejecutando y que podremos escribir un comando para poner en funcionamiento nuestro programa.</p>
+
+<p>Lo primero que debemos hacer es conectarnos al puerto <strong>3333</strong> que tiene disponible <strong>OpenOCD</strong>
+<code>
+(gdb) target remote localhost:3333
+Remote debugging using localhost:3333
+0x00000000 in ?? ()
+</code></p>
+
+<p>Ya conectado <strong>OpenOCD</strong> con <strong>GDB</strong> lo siguiente es cargar a la memoria del micro nuestro programa. Lo hacemos con el comando <code>load</code>
+<code>
+(gdb) load
+Loading section .isr_vector, size 0xc0 lma 0x8000000
+Loading section .text, size 0x484 lma 0x80000c0
+Loading section .rodata, size 0x8 lma 0x8000544
+Loading section .init_array, size 0x8 lma 0x800054c
+Loading section .fini_array, size 0x4 lma 0x8000554
+Loading section .data, size 0x440 lma 0x8000558
+Start address 0x8000378, load size 2456
+Transfer rate: 12 KB/sec, 409 bytes/write.
+</code></p>
+
+<p>Aplicamos un reset para iniciar desde la primera dirección de nuestro programa
+<code>
+(gdb) mon reset halt
+target state: halted
+target halted due to debug-request, current mode: Thread
+xPSR: 0xc1000000 pc: 0x08000378 msp: 0x20003ffc
+</code></p>
+
+<p>A partir de este punto podemos empezar la ejecución del programa que tiene en memoria el micro. Podemos simplemente poner a correr el programa, pero mejor le diremos que solo lo corra hasta cierto punto.</p>
+
+<p>Insertaremos un <strong>breakpoint</strong> justo en la línea del programa que invierte el estado del led. Revisa tu archivo <code>main.c</code> y fijate bien que numero de linea es donde se encuentra la instrucción <code>GPIOA-&gt;ODR ^= (1 &lt;&lt; LED_PIN);</code> . En <strong>gdb</strong> escribe. ( <em>en nuestro caso es la línea 19</em> )
+<code>
+(gdb) b main.c:19
+Breakpoint 1 at 0x8000154: file main.c, line 19.
+</code></p>
+
+<p>Ponemos a correr al micro con el comando <code>c</code> de <em>continue</em>
+&#8220;`
+(gdb) c
+Continuing.
+Note: automatically using hardware breakpoints for read-only addresses.</p>
+
+<p>Breakpoint 1, main () at main.c:19
+19          GPIOA->ODR ^= (1 &lt;&lt; LED_PIN);
+&#8220;`</p>
+
+<p>Puedes observar en la terminal como <strong>gdb</strong> te indica que el programa se detuvo justo en la línea donde colocaste el breakpoint.</p>
+
+<p>Vuelve a correr el programa con el comando <code>c</code> y observaras de nueva cuenta que se detiene en el <strong>breakpoint</strong>, observa tu tarjeta y ve como cada que presionas el comando <code>c</code> el led se invierte.</p>
+
+<p>Puedes colocar mas <strong>breakpoints</strong> en diferentes lugares de tu código, solo no te olvides donde los pusiste, y si se te olvide solo escribe <code>info break</code>
+<code>
+(gdb) info break
+Num     Type           Disp Enb Address    What
+1       breakpoint     keep y   0x08000154 in main at main.c:19
+    breakpoint already hit 2 times
+</code></p>
+
+<p>Si quieres que el program no se detenga y se ejecute de manera continua tendrás que borrar el <strong>breakpoint</strong>. Lo puedes hacer con <code>clear</code>
+<code>
+(gdb) clear main.c:19
+Deleted breakpoints 1
+</code></p>
+
+<p>En este caso el breakpoint estaba en el archivo <code>main.c</code>, linea <strong>19</strong></p>
+
+<p>Escribe <code>c</code> para que tu program empiece a correr, ya sin ningun breakpoint que lo detenga. Mira como parpadea el led!!.</p>
+
+<p>Para detener la ejecución de tu programa tendrás que ejecutar un <code>Ctrl+C</code>. El programa se detendrá justo en la instrucción que estaba ejecutando. En nuestro caso fue el ciclo for
+<code>
+^C
+Program received signal SIGINT, Interrupt.
+0x0800016e in main () at main.c:21
+21          for(i=0;i&lt;300000;i++);
+</code></p>
+
+<p>Para salir de <strong>gdb</strong> solo escribe <code>q</code>, nos pedira confirmacion asi que tecleamos <code>y</code>
+&#8220;`
+(gdb) q
+A debugging session is active.</p>
+
+<pre><code>Inferior 1 [Remote target] will be detached.
+</code></pre>
+
+<p>Quit anyway? (y or n) y
+Detaching from program: /home/diego/test_f072_CMSIS/Output/test.elf, Remote target
+Ending remote debugging.
+&#8220;`</p>
+
+<p>Que tal, a que no sabias que se podía hacer. Nah, probablemente si. Para terminar <strong>GDB</strong> es una herramienta muy buena para depurar y encontrar errores en tu programa cuando estas en la fase de desarrollo. Hay muchas cosas mas interesantes que se pueden hacer con gdb, pero eso lo veremos mas adelante.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Programando Con OpenOCD]]></title>
