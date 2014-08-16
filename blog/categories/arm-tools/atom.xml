@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Arm Tools | Diego Blog]]></title>
   <link href="http://testDiego.github.io/blog/categories/arm-tools/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-15T17:16:42-07:00</updated>
+  <updated>2014-08-15T17:19:43-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -29,6 +29,9 @@ $ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
 </code></p>
 
 <p>Wow!! Espera un segundo, mejor en vez de hacerlo de la manera tradicional, escribamos un archivo <strong>.cfg</strong> con las instrucciones para que <strong>OpenOCD</strong> se conecte. Si ya te conectaste solo presiona <code>Ctrl+C</code> para desconectarte.</p>
+
+<!--more-->
+
 
 <p>En la misma carpeta de tu proyecto crea el archivo <strong>openocd.cfg</strong>
 <code>
