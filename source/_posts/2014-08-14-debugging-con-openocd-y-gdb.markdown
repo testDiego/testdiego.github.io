@@ -17,6 +17,7 @@ Bien, hora de conectarse a nuestra **Nucleo-f072** usando **OpenOCD**
 $ cd ~/test_f072 #recuerda que debemos estar en la carpeta del proyecto
 $ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg
 ```
+<!--more-->
 
 Wow!! Espera un segundo, mejor en vez de hacerlo de la manera tradicional, escribamos un archivo **.cfg** con las instrucciones para que **OpenOCD** se conecte. Si ya te conectaste solo presiona `Ctrl+C` para desconectarte.
 
