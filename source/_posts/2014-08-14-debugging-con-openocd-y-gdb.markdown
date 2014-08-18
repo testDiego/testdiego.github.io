@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Debugging con OpenOCD y GDB"
+title: "Debugging con OpenOCD y GDB (pt I)"
 date: 2014-08-14 23:12:51 -0700
 comments: true
 categories: [ARM tools]
