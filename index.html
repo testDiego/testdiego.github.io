@@ -120,6 +120,123 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-17T13:37:42-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 17<sup>th</sup>, 2014</time>
+        
+           | <a href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Comments</a>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/" itemprop="url">Debugging Con OpenOCD Y GDB (Pt II)</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p>Continuamos con <strong>GDB</strong> y en esta ocasion veremos como observar el contenido de las variables y de los registros. Seguiremos retomando el programa que usamos en la <a href="http://localhost:4000/blog/2014/08/17/debugging-con-openocd-y-gdb/"><strong>primera parte</strong></a>.</p>
+
+<p>Lo primero que haremos sera modificar un poco nuestro prgrama, agregaremos unas variables que seran las que observemos. Abre el archivo <code>main.c</code> con tu editor favorito y modificalo de la siguiete manera</p>
+
+<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>main.c </h3></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define LED_PIN 5</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">uno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/*variable iniciada a cero*/</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">dos</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="cm">/*variable iniciada a dos*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">tres</span><span class="p">;</span>  <span class="cm">/*variable con valor incial indeterminado*/</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/* Enable GPIOA clock */</span>
+</span><span class='line'>    <span class="n">RCC</span><span class="o">-&gt;</span><span class="n">AHBENR</span> <span class="o">|=</span> <span class="n">RCC_AHBENR_GPIOAEN</span><span class="p">;</span>
+</span><span class='line'>    <span class="cm">/* Configure GPIOA pin 5 as output */</span>
+</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">MODER</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>    <span class="cm">/* Configure GPIOA pin 5 in max speed */</span>
+</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">OSPEEDR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span><span class="p">(;;)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/* Toggle pin 5 from port A */</span>
+</span><span class='line'>        <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">ODR</span> <span class="o">^=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">LED_PIN</span><span class="p">);</span>
+</span><span class='line'>        <span class="cm">/*incrementamos variables de prueba*/</span>
+</span><span class='line'>        <span class="n">uno</span><span class="o">++</span><span class="p">;</span>     <span class="cm">/*incremento en uno*/</span>
+</span><span class='line'>        <span class="n">dos</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span>  <span class="cm">/*incremento en dos*/</span>
+</span><span class='line'>        <span class="n">tres</span><span class="o">++</span><span class="p">;</span>    <span class="cm">/*incremnteo en uno*/</span>
+</span><span class='line'>        <span class="cm">/* simple and practical delay */</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">300000</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a class="btn btn-default" href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-14T23:12:51-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 14<sup>th</sup>, 2014</time>
         
            | <a href="/blog/2014/08/14/debugging-con-openocd-y-gdb/#disqus_thread" itemprop="discussionUrl"
@@ -128,7 +245,7 @@
       </p>
     
     
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/14/debugging-con-openocd-y-gdb/" itemprop="url">Debugging Con OpenOCD Y GDB</a></h1>
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/14/debugging-con-openocd-y-gdb/" itemprop="url">Debugging Con OpenOCD Y GDB (Pt I)</a></h1>
     
   </header>
 
@@ -351,65 +468,6 @@
 
         </article>
       
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-          
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-08T13:07:34-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 8<sup>th</sup>, 2014</time>
-        
-           | <a href="/blog/2014/08/08/primer-programa-cmsis/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/08/primer-programa-cmsis/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/08/primer-programa-cmsis/" itemprop="url">Primer Programa CMSIS (Pt II)</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>En el post <a href="http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board/"><strong>Primer Programa Bare Board</strong></a> aprendimos como correr nuestro primer programa sin la ayuda de libreria y función alguna ( <em>excepto el startup y el linker file</em> ). En esta ocasión usaremos la definición de registros acorde al estándar <strong>CMSIS</strong>.</p>
-
-<p><strong>CMSIS</strong> nos ayudará a acceder a los registros del micro de una forma más cómoda y organizada, además es un estándar difundido entre los fabricantes de micros con CPUs <strong>ARM</strong>,</p>
-
-<p>Creamos una nueva carpeta para nuestro proyecto con <strong>CMSIS</strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_f072_CMSIS</span></code></pre></td></tr></table></div></figure>
-
-
-<p>De nueva cuenta deberás copiar a la carpeta de tu proyecto el archivo linker. Recuerda lo obtienes de la librería de ST en la siguiente ruta</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/TrueSTUDIO/STM32F072RB-Nucleo/STM32F072RB_FLASH.ld</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/08/primer-programa-cmsis/">Read on &rarr;</a>
-    </footer>
-  
-
-
-        </article>
-      
     </div>
 
     <ul class="pager">
@@ -433,15 +491,15 @@
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB</a>
+    <a class="list-group-item " href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Debugging Con OpenOCD Y GDB (Pt II)</a>
+    
+    <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB (Pt I)</a>
     
     <a class="list-group-item " href="/blog/2014/08/13/programando-con-openocd/">Programando Con OpenOCD</a>
     
     <a class="list-group-item " href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
     
     <a class="list-group-item " href="/blog/2014/08/10/primer-programa-con-stm32f0cube/">Primer Programa Con STM32F0Cube (Pt III)</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/08/primer-programa-cmsis/">Primer Programa CMSIS (Pt II)</a>
     
   </div>
 </section>
@@ -453,7 +511,7 @@
     
     
     <a class="list-group-item " href="/blog/categories/arm-tools/index.html">
-        <span class="badge">4</span>
+        <span class="badge">5</span>
         arm tools
       </a>
     

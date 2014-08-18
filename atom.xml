@@ -4,7 +4,7 @@
   <title><![CDATA[Diego Blog]]></title>
   <link href="http://testDiego.github.io/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-15T17:24:41-07:00</updated>
+  <updated>2014-08-17T17:32:36-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -14,7 +14,290 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Debugging Con OpenOCD Y GDB]]></title>
+    <title type="html"><![CDATA[Debugging Con OpenOCD Y GDB (Pt II)]]></title>
+    <link href="http://testDiego.github.io/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/"/>
+    <updated>2014-08-17T13:37:42-07:00</updated>
+    <id>http://testDiego.github.io/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii</id>
+    <content type="html"><![CDATA[<p>Continuamos con <strong>GDB</strong> y en esta ocasion veremos como observar el contenido de las variables y de los registros. Seguiremos retomando el programa que usamos en la <a href="http://localhost:4000/blog/2014/08/17/debugging-con-openocd-y-gdb/"><strong>primera parte</strong></a>.</p>
+
+<p>Lo primero que haremos sera modificar un poco nuestro prgrama, agregaremos unas variables que seran las que observemos. Abre el archivo <code>main.c</code> con tu editor favorito y modificalo de la siguiete manera</p>
+
+<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>main.c </h3></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cp">#define LED_PIN 5</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">uno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/*variable iniciada a cero*/</span>
+</span><span class='line'><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">dos</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="cm">/*variable iniciada a dos*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">tres</span><span class="p">;</span>  <span class="cm">/*variable con valor incial indeterminado*/</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/* Enable GPIOA clock */</span>
+</span><span class='line'>    <span class="n">RCC</span><span class="o">-&gt;</span><span class="n">AHBENR</span> <span class="o">|=</span> <span class="n">RCC_AHBENR_GPIOAEN</span><span class="p">;</span>
+</span><span class='line'>    <span class="cm">/* Configure GPIOA pin 5 as output */</span>
+</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">MODER</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>    <span class="cm">/* Configure GPIOA pin 5 in max speed */</span>
+</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">OSPEEDR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">for</span><span class="p">(;;)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/* Toggle pin 5 from port A */</span>
+</span><span class='line'>        <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">ODR</span> <span class="o">^=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">LED_PIN</span><span class="p">);</span>
+</span><span class='line'>        <span class="cm">/*incrementamos variables de prueba*/</span>
+</span><span class='line'>        <span class="n">uno</span><span class="o">++</span><span class="p">;</span>     <span class="cm">/*incremento en uno*/</span>
+</span><span class='line'>        <span class="n">dos</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span>  <span class="cm">/*incremento en dos*/</span>
+</span><span class='line'>        <span class="n">tres</span><span class="o">++</span><span class="p">;</span>    <span class="cm">/*incremnteo en uno*/</span>
+</span><span class='line'>        <span class="cm">/* simple and practical delay */</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">300000</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!--more-->
+
+
+<p>
+Compila el programa y conecta <strong>OpenOCD</strong>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_CMSIS #recuerda que debemos estar en la carpeta del proyecto
+</span><span class='line'>$ make
+</span><span class='line'>$ sudo openocd</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Carga el programa con <strong>GDB</strong>, recuerda que todo en esto es en otra terminal</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072_CMSIS #recuerda que debemos estar en la carpeta del proyecto
+</span><span class='line'>$ arm-none-eabi-gdb Output/test.elf
+</span><span class='line'>GNU gdb (GNU Tools for ARM Embedded Processors) 7.6.0.20131129-cvs
+</span><span class='line'>Copyright (C) 2013 Free Software Foundation, Inc.
+</span><span class='line'>License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
+</span><span class='line'>This is free software: you are free to change and redistribute it.
+</span><span class='line'>There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+</span><span class='line'>and "show warranty" for details.
+</span><span class='line'>This GDB was configured as "--host=i686-linux-gnu --target=arm-none-eabi".
+</span><span class='line'>For bug reporting instructions, please see:
+</span><span class='line'>&lt;http://www.gnu.org/software/gdb/bugs/&gt;...
+</span><span class='line'>Reading symbols from /home/diego/test_f072_CMSIS/Output/test.elf...done.
+</span><span class='line'>(gdb) target remote localhost:3333
+</span><span class='line'>Remote debugging using localhost:3333
+</span><span class='line'>0x00000000 in ?? ()
+</span><span class='line'>(gdb) load
+</span><span class='line'>Loading section .isr_vector, size 0xc0 lma 0x8000000
+</span><span class='line'>Loading section .text, size 0x484 lma 0x80000c0
+</span><span class='line'>Loading section .rodata, size 0x8 lma 0x8000544
+</span><span class='line'>Loading section .init_array, size 0x8 lma 0x800054c
+</span><span class='line'>Loading section .fini_array, size 0x4 lma 0x8000554
+</span><span class='line'>Loading section .data, size 0x440 lma 0x8000558
+</span><span class='line'>Start address 0x8000378, load size 2456
+</span><span class='line'>Transfer rate: 12 KB/sec, 409 bytes/write.
+</span><span class='line'>(gdb) mon reset halt
+</span><span class='line'>target state: halted
+</span><span class='line'>target halted due to debug-request, current mode: Thread
+</span><span class='line'>xPSR: 0xc1000000 pc: 0x08000378 msp: 0x20003ffc</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Vamos a colocar un <strong>breakpoint</strong> justo en  el mismo lugar que el anterior <code>GPIOA-&gt;ODR ^= (1 &lt;&lt; LED_PIN);</code>. Pero como modifcamos el programa, ahora se encuntra en un numero de linea diferente.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) b main.c:25
+</span><span class='line'>Breakpoint 1 at 0x8000154: file main.c, line 25.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Corre el programa con <code>c</code> para que se dentenga justo en el breakpoint.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) c
+</span><span class='line'>Continuing.
+</span><span class='line'>Breakpoint 1, main () at main.c:25
+</span><span class='line'>25          GPIOA-&gt;ODR ^= (1 &lt;&lt; LED_PIN);</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Mostrando valores de variables</h2>
+
+<p>Bien ahora que el programa esta detenido podemos preguntar que valor poseen las variables justo en este punto del programa, y para ello usamos el comando <code>print</code> mejor abreviado como <code>p</code>. Preguntaremos por la varibale <code>uno</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p uno
+</span><span class='line'>$1 = 0</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Como puedes ver nos arroja el valor en decimal que posee la variable en ese momento. Ahora te toca a ti. Pregunta por el valor de las otras dos variables, <code>dos</code> y <code>tres</code>.</p>
+
+<p>Corre de nueva cuenta el programa con <code>c</code>. Segun nuestro codigo las variables se incrementaran en uno y dos valores. Asi que de nueva cuenta interroga por el valor de las variables y observa como su valor efectivamente se incrementa. Yo observare cuanto vale <code>dos</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p dos
+</span><span class='line'>$2 = 4</span></code></pre></td></tr></table></div></figure>
+
+
+<p>El comando <code>print</code> o <code>p</code> pude imprimir el valor de una variable en mas tipos de formatos a parte del decimal (default) solo deberemos agregar <code>\x</code> donde x es la letra correspodiente al formato. Ejemplo</p>
+
+<p><strong>hexadecimal</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p/x dos
+</span><span class='line'>$3 = 0x4</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>binario</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p/t dos
+</span><span class='line'>$3 = 100</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Existen mas formatos como octal, sin signo o caracter. Puedes revisar <a href="http://davis.lbl.gov/Manuals/GDB/gdb_9.html#SEC58"><strong>Aqui</strong></a></p>
+
+<h2>Mostrando valores de registros</h2>
+
+<p>No solo de las variables podemos observar sus valores actuales, que tal si queremos saber el contenido actual del registro <code>ODR</code>. Y saber si efectivamente el <strong>bit 5</strong> vale uno o dos.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p/x GPIOA-&gt;ODR
+</span><span class='line'>No symbol "GPIOA" in current context.</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Oh sorpresa!. No se puede, asi es no se puede porque <code>GPIOA</code> no es ninguna variable es una definicion, de un puntero a una estructura para ser mas exactos. Pero lo que si se puede es indicar que nos muestre la informacion de una direccion de memoria y resulta que el registro <code>GPIOA-&gt;ODR</code> se encuntra en la direccion <code>0x48000014</code>.
+Lo expresamos en hexadecimal y realizamos un pequeño cast a la direccion</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p/x *(int*)0x48000014
+</span><span class='line'>$6 = 0x20</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Otra manera alterna es usar <code>x</code>. El cual es el comando para indicar contenidos de direcciones de memoria.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) x 0x48000014
+</span><span class='line'>0x48000014: 0x00000020</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Dale continue con <code>c</code> y vuelve a imprimir el valor de la direccion para que observes como el bit 5 cambia de valor ( <em>y ve como concuerda con el led</em> ).</p>
+
+<p>Tengo que admitirlo, tener que saber la direccion de cada registro de cada periferico del micro, es algo engorroso y te obliga a tener siempre a la mano la hoja de datos del micro ( <em>o el archivo stm32f072xb.h</em> ). Que se le va haser.</p>
+
+<h2>La opcion -g3 de GCC</h2>
+
+<p>No todo esta perdido, memorizar las direcciones de los registros no es la unica opcion. Simplemente debemos compilar nuestro prgrama con la opcion -g3 ( <em>actualmente lo hacemos solo con al opcion -g</em> ).</p>
+
+<p>Hasique abre el archivo makefile de tu proyecto con tu editor de texto favorito y realiza el siguiente cambio
+modifica la linea siguiente. De esto</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$(CC) $(CCFLAGS) -c -g -o $@ $^</span></code></pre></td></tr></table></div></figure>
+
+
+<p>a esto</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$(CC) $(CCFLAGS) -c -g3 -o $@ $^</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Compila de nuevo y carga de nuevo el programa a tu tarjeta usando OpenOCD y GDB, coloca el breakpoint corre el program y cuando se detenga pregunta por el valor de <code>GPIOA-&gt;ODR</code></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p/x GPIOA-&gt;ODR
+</span><span class='line'>$7 = 0x20</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Tu programa se puede compilar para generar informacion que ayudara al debugger a rastrear tu programa, tal como lo estamos haciendo. Existen tres niveles de informacion con la que podemos compilar. <code>-g0, -g1, -g2</code> y <code>-g3</code>. siendo <code>-g0</code> ninguna infromacion para debuggear y <code>-g3</code> el maximo nivel de informacion que podemos tener. El nivel por default es <code>-g2</code> o <code>-g</code>.</p>
+
+<p>Para informacion mas a detalle de GCC y GDB revisa</p>
+
+<ul>
+<li><p><a href="https://gcc.gnu.org/onlinedocs/gcc-4.4.0/gcc/Debugging-Options.html#Debugging-Options"><strong>GCC Debugging options</strong></a></p></li>
+<li><p><a href="http://davis.lbl.gov/Manuals/GDB/gdb_9.html#SEC58"><strong>GDB print option</strong></a></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Debugging Con OpenOCD Y GDB (Pt I)]]></title>
     <link href="http://testDiego.github.io/blog/2014/08/14/debugging-con-openocd-y-gdb/"/>
     <updated>2014-08-14T23:12:51-07:00</updated>
     <id>http://testDiego.github.io/blog/2014/08/14/debugging-con-openocd-y-gdb</id>
