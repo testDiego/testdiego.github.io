@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Arm Tools | Diego Blog]]></title>
   <link href="http://testDiego.github.io/blog/categories/arm-tools/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-20T00:22:08-07:00</updated>
+  <updated>2014-08-20T00:26:51-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -26,41 +26,69 @@
 
 <p>Bueno nuestro micro no, pero la computadora que usamos para programar y debuggear si. Podemos usar el <strong>debugger</strong> ( <em>en el caso de la tarjeta Nucleo-f072rb es el ST-Link</em> ) para mandar la informacion de la función <code>printf</code> de nuestro programa a la pantalla de <strong>OpenOCD</strong>.</p>
 
-<p>Crearemos un nuevo proyecto con <strong>CMSIS</strong> incluido, como en el post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Llamaremos a ese proyecto <code>test_semihosting</code>, y en el archivo <code>main.c</code> escribimos lo siguiente
-&#8220;`C</p>
-
-<h1>include &ldquo;stm32f072xb.h&rdquo;</h1>
-
-<h1>include &lt;stdio.h></h1>
-
-<p>extern void initialise_monitor_handles(void);</p>
-
-<p>int main ( void )
-{
-    int i;</p>
-
-<pre><code>initialise_monitor_handles();
-
-printf("Hola semihosting\n\r");
-for(;;)
-{
-    /* bucle */
-    for(i=0;i&lt;10;i++)
-    {
-        printf("la variable i = %d\n\r", i);
-    }
-    printf("fin del bucle\n\n\r");
-}
-</code></pre>
-
-<p>}
-&#8220;`</p>
+<p>Crearemos un nuevo proyecto con <strong>CMSIS</strong> incluido, como en el post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Llamaremos a ese proyecto <code>test_semihosting</code>, y en el archivo <code>main.c</code> escribimos lo siguiente</p>
 
 <!--more-->
 
 
-<p>
-Observa bien el codigo que acabas de escribir y nota que referenciamos la función <code>extern void initialise_monitor_handles(void)</code> esta funcion es la que habilitará al debugger para que despliegue la información por pantalla.</p>
+<p><figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>main.c </h3></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">include</span> <span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">stm32f072xb</span><span class="p">.</span><span class="n">h</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="n">include</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">stdio</span><span class="p">.</span><span class="n">h</span><span class="o">&gt;&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="k">extern</span> <span class="kt">void</span> <span class="n">initialise_monitor_handles</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kt">int</span> <span class="n">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">initialise_monitor_handles</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hola semihosting</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="k">for</span><span class="p">(;;)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="cm">/* bucle */</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;la variable i = %d</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;fin del bucle</span><span class="se">\n\n\r</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Observa bien el codigo que acabas de escribir y nota que referenciamos la función <code>extern void initialise_monitor_handles(void)</code> esta funcion es la que habilitará al debugger para que despliegue la información por pantalla.</p>
 
 <p>Es necesario mandar llamar esta función en tu programa antes de usar la función <code>printf</code>. tal como se aprecia en el codigo de ejemplo.</p>
 

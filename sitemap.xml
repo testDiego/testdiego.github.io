@@ -65,21 +65,21 @@
   
   <url>
     <loc>http://testDiego.github.io/</loc>
-    <lastmod>2014-08-20T00:22:08-07:00</lastmod>
+    <lastmod>2014-08-20T00:26:51-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   
   <url>
     <loc>http://testDiego.github.io/blog/archives/</loc>
-    <lastmod>2014-08-20T00:22:08-07:00</lastmod>
+    <lastmod>2014-08-20T00:26:51-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>http://testDiego.github.io/about-me/</loc>
-    <lastmod>2014-08-20T00:22:08-07:00</lastmod>
+    <lastmod>2014-08-20T00:26:51-07:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

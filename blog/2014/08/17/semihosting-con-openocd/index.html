@@ -142,7 +142,11 @@
 
 <p>Crearemos un nuevo proyecto con <strong>CMSIS</strong> incluido, como en el post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Llamaremos a ese proyecto <code>test_semihosting</code>, y en el archivo <code>main.c</code> escribimos lo siguiente</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<!--more-->
+
+
+<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>main.c </h3></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -164,7 +168,7 @@
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
 </span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">extern</span> <span class="kt">void</span> <span class="nf">initialise_monitor_handles</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
@@ -189,26 +193,19 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-
-
-<!--more-->
-
-
-<p>
-Observa bien el codigo que acabas de escribir y nota que referenciamos la función <code>extern void initialise_monitor_handles(void)</code> esta funcion es la que habilitará al debugger para que despliegue la información por pantalla.</p>
+<p>Observa bien el codigo que acabas de escribir y nota que referenciamos la función <code>extern void initialise_monitor_handles(void)</code> esta funcion es la que habilitará al debugger para que despliegue la información por pantalla.</p>
 
 <p>Es necesario mandar llamar esta función en tu programa antes de usar la función <code>printf</code>. tal como se aprecia en el codigo de ejemplo.</p>
 
 <p>Aparte de lo anterior necesitaremos compilar el programa con un par de opciones extra. En las opciones del linker debemos colocar <code>--specs=rdimon.specs -lc -lrdimon</code>. En el archivo <strong>makefile</strong> escribe en <code>LCDFLAGS</code></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">LDFLAGS</span> <span class="o">=</span> <span class="err">$</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span> <span class="o">-</span><span class="n">Wl</span><span class="p">,</span><span class="o">--</span><span class="n">gc</span><span class="o">-</span><span class="n">sections</span> <span class="o">--</span><span class="n">specs</span><span class="o">=</span><span class="n">rdimon</span><span class="p">.</span><span class="n">specs</span> <span class="o">-</span><span class="n">lc</span> <span class="o">-</span><span class="n">lrdimon</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>LDFLAGS = $(CPU) -Wl,--gc-sections --specs=rdimon.specs -lc -lrdimon</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Compila y conectate a la tarjeta con <strong>OpenOCD</strong>. Al momento de usar <strong>GDB</strong> debemos agregar <code>mon enable semihosting</code> a la lista de opciones que normalmente usamos cuando cargamos un programa. Aqui la lista de los comandos.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -239,43 +236,42 @@ Observa bien el codigo que acabas de escribir y nota que referenciamos la funci�
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
 <span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">diego</span><span class="err">@</span><span class="n">diego</span><span class="o">-</span><span class="nl">X55A</span><span class="p">:</span><span class="o">~/</span><span class="n">test_semihosting</span><span class="err">$</span> <span class="n">arm</span><span class="o">-</span><span class="n">none</span><span class="o">-</span><span class="n">eabi</span><span class="o">-</span><span class="n">gdb</span> <span class="n">Output</span><span class="o">/</span><span class="n">test</span><span class="p">.</span><span class="n">elf</span>
-</span><span class='line'><span class="n">GNU</span> <span class="n">gdb</span> <span class="p">(</span><span class="n">GNU</span> <span class="n">Tools</span> <span class="k">for</span> <span class="n">ARM</span> <span class="n">Embedded</span> <span class="n">Processors</span><span class="p">)</span> <span class="mf">7.6.0.20131129</span><span class="o">-</span><span class="n">cvs</span>
-</span><span class='line'><span class="n">Copyright</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="mi">2013</span> <span class="n">Free</span> <span class="n">Software</span> <span class="n">Foundation</span><span class="p">,</span> <span class="n">Inc</span><span class="p">.</span>
-</span><span class='line'><span class="n">License</span> <span class="n">GPLv3</span><span class="o">+:</span> <span class="n">GNU</span> <span class="n">GPL</span> <span class="n">version</span> <span class="mi">3</span> <span class="n">or</span> <span class="n">later</span> <span class="o">&lt;</span><span class="nl">http</span><span class="p">:</span><span class="c1">//gnu.org/licenses/gpl.html&gt;</span>
-</span><span class='line'><span class="n">This</span> <span class="n">is</span> <span class="n">free</span> <span class="nl">software</span><span class="p">:</span> <span class="n">you</span> <span class="n">are</span> <span class="n">free</span> <span class="n">to</span> <span class="n">change</span> <span class="n">and</span> <span class="n">redistribute</span> <span class="n">it</span><span class="p">.</span>
-</span><span class='line'><span class="n">There</span> <span class="n">is</span> <span class="n">NO</span> <span class="n">WARRANTY</span><span class="p">,</span> <span class="n">to</span> <span class="n">the</span> <span class="n">extent</span> <span class="n">permitted</span> <span class="n">by</span> <span class="n">law</span><span class="p">.</span>  <span class="n">Type</span> <span class="s">&quot;show copying&quot;</span>
-</span><span class='line'><span class="n">and</span> <span class="s">&quot;show warranty&quot;</span> <span class="k">for</span> <span class="n">details</span><span class="p">.</span>
-</span><span class='line'><span class="n">This</span> <span class="n">GDB</span> <span class="n">was</span> <span class="n">configured</span> <span class="n">as</span> <span class="s">&quot;--host=i686-linux-gnu --target=arm-none-eabi&quot;</span><span class="p">.</span>
-</span><span class='line'><span class="n">For</span> <span class="n">bug</span> <span class="n">reporting</span> <span class="n">instructions</span><span class="p">,</span> <span class="n">please</span> <span class="nl">see</span><span class="p">:</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nl">http</span><span class="p">:</span><span class="c1">//www.gnu.org/software/gdb/bugs/&gt;...</span>
-</span><span class='line'><span class="n">Reading</span> <span class="n">symbols</span> <span class="n">from</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">diego</span><span class="o">/</span><span class="n">test_semihosting</span><span class="o">/</span><span class="n">Output</span><span class="o">/</span><span class="n">test</span><span class="p">.</span><span class="n">elf</span><span class="p">...</span><span class="n">done</span><span class="p">.</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">target</span> <span class="n">remote</span> <span class="nl">localhost</span><span class="p">:</span><span class="mi">3333</span>
-</span><span class='line'><span class="n">Remote</span> <span class="n">debugging</span> <span class="n">using</span> <span class="nl">localhost</span><span class="p">:</span><span class="mi">3333</span>
-</span><span class='line'><span class="mh">0x00000000</span> <span class="n">in</span> <span class="o">??</span> <span class="p">()</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">mon</span> <span class="n">arm</span> <span class="n">semihosting</span> <span class="n">enable</span>
-</span><span class='line'><span class="n">semihosting</span> <span class="n">is</span> <span class="n">enabled</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">load</span>
-</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">isr_vector</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0xc0</span> <span class="n">lma</span> <span class="mh">0x8000000</span>
-</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">text</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x759c</span> <span class="n">lma</span> <span class="mh">0x80000c0</span>
-</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">rodata</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x3b0</span> <span class="n">lma</span> <span class="mh">0x8007660</span>
-</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">ARM</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x8</span> <span class="n">lma</span> <span class="mh">0x8007a10</span>
-</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">init_array</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x8</span> <span class="n">lma</span> <span class="mh">0x8007a18</span>
-</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">fini_array</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x4</span> <span class="n">lma</span> <span class="mh">0x8007a20</span>
-</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x8b4</span> <span class="n">lma</span> <span class="mh">0x8007a24</span>
-</span><span class='line'><span class="n">Start</span> <span class="n">address</span> <span class="mh">0x8002ebc</span><span class="p">,</span> <span class="n">load</span> <span class="n">size</span> <span class="mi">33492</span>
-</span><span class='line'><span class="n">Transfer</span> <span class="nl">rate</span><span class="p">:</span> <span class="mi">22</span> <span class="n">KB</span><span class="o">/</span><span class="n">sec</span><span class="p">,</span> <span class="mi">4186</span> <span class="n">bytes</span><span class="o">/</span><span class="n">write</span><span class="p">.</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">mon</span> <span class="n">reset</span> <span class="n">halt</span>
-</span><span class='line'><span class="n">target</span> <span class="nl">state</span><span class="p">:</span> <span class="n">halted</span>
-</span><span class='line'><span class="n">target</span> <span class="n">halted</span> <span class="n">due</span> <span class="n">to</span> <span class="n">debug</span><span class="o">-</span><span class="n">request</span><span class="p">,</span> <span class="n">current</span> <span class="nl">mode</span><span class="p">:</span> <span class="n">Thread</span>
-</span><span class='line'><span class="nl">xPSR</span><span class="p">:</span> <span class="mh">0xc1000000</span> <span class="nl">pc</span><span class="p">:</span> <span class="mh">0x08002ebc</span> <span class="nl">msp</span><span class="p">:</span> <span class="mh">0x20003ffc</span><span class="p">,</span> <span class="n">semihosting</span>
-</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>diego@diego-X55A:~/test_semihosting$ arm-none-eabi-gdb Output/test.elf
+</span><span class='line'>GNU gdb (GNU Tools for ARM Embedded Processors) 7.6.0.20131129-cvs
+</span><span class='line'>Copyright (C) 2013 Free Software Foundation, Inc.
+</span><span class='line'>License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;
+</span><span class='line'>This is free software: you are free to change and redistribute it.
+</span><span class='line'>There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+</span><span class='line'>and "show warranty" for details.
+</span><span class='line'>This GDB was configured as "--host=i686-linux-gnu --target=arm-none-eabi".
+</span><span class='line'>For bug reporting instructions, please see:
+</span><span class='line'>&lt;http://www.gnu.org/software/gdb/bugs/&gt;...
+</span><span class='line'>Reading symbols from /home/diego/test_semihosting/Output/test.elf...done.
+</span><span class='line'>(gdb) target remote localhost:3333
+</span><span class='line'>Remote debugging using localhost:3333
+</span><span class='line'>0x00000000 in ?? ()
+</span><span class='line'>(gdb) mon arm semihosting enable
+</span><span class='line'>semihosting is enabled
+</span><span class='line'>(gdb) load
+</span><span class='line'>Loading section .isr_vector, size 0xc0 lma 0x8000000
+</span><span class='line'>Loading section .text, size 0x759c lma 0x80000c0
+</span><span class='line'>Loading section .rodata, size 0x3b0 lma 0x8007660
+</span><span class='line'>Loading section .ARM, size 0x8 lma 0x8007a10
+</span><span class='line'>Loading section .init_array, size 0x8 lma 0x8007a18
+</span><span class='line'>Loading section .fini_array, size 0x4 lma 0x8007a20
+</span><span class='line'>Loading section .data, size 0x8b4 lma 0x8007a24
+</span><span class='line'>Start address 0x8002ebc, load size 33492
+</span><span class='line'>Transfer rate: 22 KB/sec, 4186 bytes/write.
+</span><span class='line'>(gdb) mon reset halt
+</span><span class='line'>target state: halted
+</span><span class='line'>target halted due to debug-request, current mode: Thread
+</span><span class='line'>xPSR: 0xc1000000 pc: 0x08002ebc msp: 0x20003ffc, semihosting
+</span><span class='line'>(gdb)</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Coloca un breakpoint en la linea <code>printf("fin del bucle\n\n\r");</code> y corre el programa. Podrás notar en la pantalla de <strong>GDB</strong> que nada aparece, pero si revisas la terminal en la que tienes corriendo <strong>OpenOCD</strong> podras ver la informacion enviada por <code>printf</code>.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -286,25 +282,23 @@ Observa bien el codigo que acabas de escribir y nota que referenciamos la funci�
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">Hola</span> <span class="n">semihosting</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">3</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">4</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">6</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">7</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">8</span>
-</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">9</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Hola semihosting
+</span><span class='line'>la variable i = 0
+</span><span class='line'>la variable i = 1
+</span><span class='line'>la variable i = 2
+</span><span class='line'>la variable i = 3
+</span><span class='line'>la variable i = 4
+</span><span class='line'>la variable i = 5
+</span><span class='line'>la variable i = 6
+</span><span class='line'>la variable i = 7
+</span><span class='line'>la variable i = 8
+</span><span class='line'>la variable i = 9</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Mola bastante verdad!!!, Pero antes de que te alegres deberías observar el tamaño de tu programa. Cuando usaste <code>load</code> GDB te dio esta información.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">Start</span> <span class="n">address</span> <span class="mh">0x8002ebc</span><span class="p">,</span> <span class="n">load</span> <span class="n">size</span> <span class="mi">33492</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Start address 0x8002ebc, load size 33492</span></code></pre></td></tr></table></div></figure>
 
 
 <p><strong>33K de codigo!!!!</strong>. Oh si!.  Usar la librería estándar agrega bastante código extra a tu programa y siendo honestos la libreria estandar de <strong>C</strong> que viene con <strong>GNU ARM</strong> no es la version completa. Se usa una version reducida, especial para embedded llamada <strong>newlib</strong>. Que, ¿creias que era gratis?.</p>
@@ -315,23 +309,20 @@ Observa bien el codigo que acabas de escribir y nota que referenciamos la funci�
 
 <p>Asi que  en tu makefile en GCFLAGS quedaria asi</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">CCFLAGS</span> <span class="o">=</span> <span class="err">$</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">INCLUDES</span><span class="p">)</span> <span class="o">-</span><span class="n">Wall</span> <span class="o">-</span><span class="n">fno</span><span class="o">-</span><span class="n">common</span> <span class="o">-</span><span class="n">O0</span> <span class="o">-</span><span class="n">fomit</span><span class="o">-</span><span class="n">frame</span><span class="o">-</span><span class="n">pointer</span> <span class="o">-</span><span class="n">Wstrict</span><span class="o">-</span><span class="n">prototypes</span> <span class="o">-</span><span class="n">fverbose</span><span class="o">-</span><span class="n">asm</span> <span class="o">-</span><span class="n">Os</span> <span class="o">-</span><span class="n">flto</span> <span class="o">-</span><span class="n">ffunction</span><span class="o">-</span><span class="n">sections</span> <span class="o">-</span><span class="n">fdata</span><span class="o">-</span><span class="n">sections</span> <span class="o">-</span><span class="n">fno</span><span class="o">-</span><span class="n">builtin</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>CCFLAGS = $(CPU) $(INCLUDES) -Wall -fno-common -O0 -fomit-frame-pointer -Wstrict-prototypes -fverbose-asm -Os -flto -ffunction-sections -fdata-sections -fno-builtin</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Y en LDFLAGS quedaría de este modo</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">LDFLAGS</span> <span class="o">=</span> <span class="err">$</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span> <span class="o">-</span><span class="n">Wl</span><span class="p">,</span><span class="o">--</span><span class="n">gc</span><span class="o">-</span><span class="n">sections</span> <span class="o">--</span><span class="n">specs</span><span class="o">=</span><span class="n">rdimon</span><span class="p">.</span><span class="n">specs</span> <span class="o">-</span><span class="n">lc</span> <span class="o">-</span><span class="n">lrdimon</span> <span class="o">--</span><span class="n">specs</span><span class="o">=</span><span class="n">nano</span><span class="p">.</span><span class="n">specs</span> <span class="o">-</span><span class="n">lc</span> <span class="o">-</span><span class="n">lnosys</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>LDFLAGS = $(CPU) -Wl,--gc-sections --specs=rdimon.specs -lc -lrdimon --specs=nano.specs -lc -lnosys</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Vuelve a repetir el proceso anterior de compilar, conectar OpenOCD y cargar con GDB tu programa. Fijate cuando usas <code>load</code> la cantidad de codigo que en esta ocasion se carga a tu micro.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">Start</span> <span class="n">address</span> <span class="mh">0x8000b44</span><span class="p">,</span> <span class="n">load</span> <span class="n">size</span> <span class="mi">5520</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Start address 0x8000b44, load size 5520</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Wow!. Se redujo a tan solo 5K, una cantidad mas considerable. Pero existe un precio como la imposibilidad de manejar numeros flotantes en la funcion <code>printf</code></p>
@@ -340,11 +331,10 @@ Observa bien el codigo que acabas de escribir y nota que referenciamos la funci�
 
 <p>Bueno no solo memoria de programa se consume por la funcion printf. Tambien se consume memoria RAM, <strong>stack</strong> y <strong>heap</strong> para ser mas especificos. Abre el archivo <strong>STM32F072RB_FLASH.ld</strong> con tu editor de texto y fijate en las líneas 37 y 38</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">_Min_Heap_Size</span> <span class="o">=</span> <span class="mh">0x200</span><span class="p">;</span>      <span class="cm">/* required amount of heap  */</span>
-</span><span class='line'><span class="n">_Min_Stack_Size</span> <span class="o">=</span> <span class="mh">0x400</span><span class="p">;</span>     <span class="cm">/* required amount of stack */</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>_Min_Heap_Size = 0x200;      /* required amount of heap  */
+</span><span class='line'>_Min_Stack_Size = 0x400;     /* required amount of stack */</span></code></pre></td></tr></table></div></figure>
 
 
 <p>En este archivo se le da al stack 2k de memoria y al heap 1k. El uso de stack es muy común pues aquí es donde se almacenan las variables locales, pero a menos que se maneje memoria dinámica el valor de heap sera 0.</p>

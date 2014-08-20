@@ -143,55 +143,6 @@
 
 <p>Crearemos un nuevo proyecto con <strong>CMSIS</strong> incluido, como en el post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Llamaremos a ese proyecto <code>test_semihosting</code>, y en el archivo <code>main.c</code> escribimos lo siguiente</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
-</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">extern</span> <span class="kt">void</span> <span class="nf">initialise_monitor_handles</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">initialise_monitor_handles</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hola semihosting</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">for</span><span class="p">(;;)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="cm">/* bucle */</span>
-</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;la variable i = %d</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;fin del bucle</span><span class="se">\n\n\r</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
 </div>
   
   
