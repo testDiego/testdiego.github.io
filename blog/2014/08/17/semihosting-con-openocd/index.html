@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Semihosting Con OpenOCD - Diego Blog</title>
+  <meta name="author" content="Diego">
+
+  <meta name="description" content="Habilitaremos la opcion de semihosting o como usar la funcion printf con OpenOCD">
+  <meta name="keywords" content="tutorial,arm,linux,microcontrollers,st,stm32f0,cortex-m0,openocd, gdb, semihosting">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://testDiego.github.io/blog/2014/08/17/semihosting-con-openocd">
+  <link href="/favicon.png" type="image/png" rel="icon">
+  <link href="/atom.xml" rel="alternate" title="Diego Blog" type="application/atom+xml">
+
+  <script src="/javascripts/libs/jquery/jquery-2.0.3.min.js"></script>
+
+<link href="/assets/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+<link href="/assets/bootstrap/dist/css/bootstrap-cerulean.min.css" rel="stylesheet" type="text/css">
+
+
+  
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+  
+   <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53687731-1', 'auto');
+    ga('send', 'pageview');
+
+  </script>
+
+
+</head>
+
+  <body   >
+    <div id="wrap">
+      <header role="banner">
+        <nav class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Diego Blog</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a rel="index" href="/">Blog</a>
+                </li>
+                <li >
+                    <a href="/blog/archives">Archives</a>
+                </li>
+				<li >
+                    <a href="/about-me">About me</a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="subscribe-rss" href="/atom.xml" title="subscribe via RSS">
+                        <span class="visible-xs">RSS</span>
+                        <img class="hidden-xs" src="/images/rss.png" alt="RSS">
+                    </a>
+                </li>
+                
+            </ul>
+            
+                <form class="search navbar-form navbar-right" action="https://www.google.com/search" method="GET">
+                    <input type="hidden" name="q" value="site:testDiego.github.io">
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="q" placeholder="Search">
+                    </div>
+                </form>
+            
+        </div>
+    </div>
+</nav>
+
+
+      </header>
+      <div id="main" class="container">
+        <div id="content">
+          <div class="row">
+  <div class="page-content col-md-9" itemscope itemtype="http://schema.org/Blog">
+    <meta itemprop="name" content="Diego Blog" />
+    <meta itemprop="description" content="Este blog esta dedicado a micros ARM mas concretamente del fabricante ST. Principalmente a la programacion en ambientes linux mediante herrameintas open source" />
+    <meta itemprop="url" content="http://testDiego.github.io" />
+    <article class="hentry" role="article" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+      
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-17T22:43:53-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 17<sup>th</sup>, 2014</time>
+        
+           | <a href="#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io">Comments</a>
+        
+      </p>
+    
+    
+    <h1 class="entry-title" itemprop="name headline">
+        Semihosting Con OpenOCD
+        
+    </h1>
+    
+  </header>
+
+
+<div class="entry-content clearfix" itemprop="articleBody"><p>Si has tenido la oportunidad de programar en C para la computadora, entonces de seguro conocerás la función <code>printf</code>. Esta función no es ninguna instrucción de <strong>C</strong> pero si es parte de la <strong>libreria estandar de C</strong>.</p>
+
+<p>Sin entrar en mucho detalles la función <code>printf</code> nos permite por lo general mandar información por pantalla. En la computadora típicamente es el monitor.</p>
+
+<p>Cualquier compilador decente de <strong>C</strong> para cualquier plataforma, trae esta librería estándar incluida. El compilador <strong>GNU ARM</strong> no es la excepcion y podremos, en nuestro programa utilizar la función <code>printf</code>. ¿Pero como?, si nuestro micro no tiene una pantalla!!.</p>
+
+<p>Bueno nuestro micro no, pero la computadora que usamos para programar y debuggear si. Podemos usar el <strong>debugger</strong> ( <em>en el caso de la tarjeta Nucleo-f072rb es el ST-Link</em> ) para mandar la informacion de la función <code>printf</code> de nuestro programa a la pantalla de <strong>OpenOCD</strong>.</p>
+
+<p>Crearemos un nuevo proyecto con <strong>CMSIS</strong> incluido, como en el post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Llamaremos a ese proyecto <code>test_semihosting</code>, y en el archivo <code>main.c</code> escribimos lo siguiente</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">extern</span> <span class="kt">void</span> <span class="nf">initialise_monitor_handles</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">initialise_monitor_handles</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hola semihosting</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(;;)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/* bucle */</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;la variable i = %d</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;fin del bucle</span><span class="se">\n\n\r</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<!--more-->
+
+
+<p>
+Observa bien el codigo que acabas de escribir y nota que referenciamos la función <code>extern void initialise_monitor_handles(void)</code> esta funcion es la que habilitará al debugger para que despliegue la información por pantalla.</p>
+
+<p>Es necesario mandar llamar esta función en tu programa antes de usar la función <code>printf</code>. tal como se aprecia en el codigo de ejemplo.</p>
+
+<p>Aparte de lo anterior necesitaremos compilar el programa con un par de opciones extra. En las opciones del linker debemos colocar <code>--specs=rdimon.specs -lc -lrdimon</code>. En el archivo <strong>makefile</strong> escribe en <code>LCDFLAGS</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">LDFLAGS</span> <span class="o">=</span> <span class="err">$</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span> <span class="o">-</span><span class="n">Wl</span><span class="p">,</span><span class="o">--</span><span class="n">gc</span><span class="o">-</span><span class="n">sections</span> <span class="o">--</span><span class="n">specs</span><span class="o">=</span><span class="n">rdimon</span><span class="p">.</span><span class="n">specs</span> <span class="o">-</span><span class="n">lc</span> <span class="o">-</span><span class="n">lrdimon</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Compila y conectate a la tarjeta con <strong>OpenOCD</strong>. Al momento de usar <strong>GDB</strong> debemos agregar <code>mon enable semihosting</code> a la lista de opciones que normalmente usamos cuando cargamos un programa. Aqui la lista de los comandos.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">diego</span><span class="err">@</span><span class="n">diego</span><span class="o">-</span><span class="nl">X55A</span><span class="p">:</span><span class="o">~/</span><span class="n">test_semihosting</span><span class="err">$</span> <span class="n">arm</span><span class="o">-</span><span class="n">none</span><span class="o">-</span><span class="n">eabi</span><span class="o">-</span><span class="n">gdb</span> <span class="n">Output</span><span class="o">/</span><span class="n">test</span><span class="p">.</span><span class="n">elf</span>
+</span><span class='line'><span class="n">GNU</span> <span class="n">gdb</span> <span class="p">(</span><span class="n">GNU</span> <span class="n">Tools</span> <span class="k">for</span> <span class="n">ARM</span> <span class="n">Embedded</span> <span class="n">Processors</span><span class="p">)</span> <span class="mf">7.6.0.20131129</span><span class="o">-</span><span class="n">cvs</span>
+</span><span class='line'><span class="n">Copyright</span> <span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="mi">2013</span> <span class="n">Free</span> <span class="n">Software</span> <span class="n">Foundation</span><span class="p">,</span> <span class="n">Inc</span><span class="p">.</span>
+</span><span class='line'><span class="n">License</span> <span class="n">GPLv3</span><span class="o">+:</span> <span class="n">GNU</span> <span class="n">GPL</span> <span class="n">version</span> <span class="mi">3</span> <span class="n">or</span> <span class="n">later</span> <span class="o">&lt;</span><span class="nl">http</span><span class="p">:</span><span class="c1">//gnu.org/licenses/gpl.html&gt;</span>
+</span><span class='line'><span class="n">This</span> <span class="n">is</span> <span class="n">free</span> <span class="nl">software</span><span class="p">:</span> <span class="n">you</span> <span class="n">are</span> <span class="n">free</span> <span class="n">to</span> <span class="n">change</span> <span class="n">and</span> <span class="n">redistribute</span> <span class="n">it</span><span class="p">.</span>
+</span><span class='line'><span class="n">There</span> <span class="n">is</span> <span class="n">NO</span> <span class="n">WARRANTY</span><span class="p">,</span> <span class="n">to</span> <span class="n">the</span> <span class="n">extent</span> <span class="n">permitted</span> <span class="n">by</span> <span class="n">law</span><span class="p">.</span>  <span class="n">Type</span> <span class="s">&quot;show copying&quot;</span>
+</span><span class='line'><span class="n">and</span> <span class="s">&quot;show warranty&quot;</span> <span class="k">for</span> <span class="n">details</span><span class="p">.</span>
+</span><span class='line'><span class="n">This</span> <span class="n">GDB</span> <span class="n">was</span> <span class="n">configured</span> <span class="n">as</span> <span class="s">&quot;--host=i686-linux-gnu --target=arm-none-eabi&quot;</span><span class="p">.</span>
+</span><span class='line'><span class="n">For</span> <span class="n">bug</span> <span class="n">reporting</span> <span class="n">instructions</span><span class="p">,</span> <span class="n">please</span> <span class="nl">see</span><span class="p">:</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nl">http</span><span class="p">:</span><span class="c1">//www.gnu.org/software/gdb/bugs/&gt;...</span>
+</span><span class='line'><span class="n">Reading</span> <span class="n">symbols</span> <span class="n">from</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">diego</span><span class="o">/</span><span class="n">test_semihosting</span><span class="o">/</span><span class="n">Output</span><span class="o">/</span><span class="n">test</span><span class="p">.</span><span class="n">elf</span><span class="p">...</span><span class="n">done</span><span class="p">.</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">target</span> <span class="n">remote</span> <span class="nl">localhost</span><span class="p">:</span><span class="mi">3333</span>
+</span><span class='line'><span class="n">Remote</span> <span class="n">debugging</span> <span class="n">using</span> <span class="nl">localhost</span><span class="p">:</span><span class="mi">3333</span>
+</span><span class='line'><span class="mh">0x00000000</span> <span class="n">in</span> <span class="o">??</span> <span class="p">()</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">mon</span> <span class="n">arm</span> <span class="n">semihosting</span> <span class="n">enable</span>
+</span><span class='line'><span class="n">semihosting</span> <span class="n">is</span> <span class="n">enabled</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">load</span>
+</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">isr_vector</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0xc0</span> <span class="n">lma</span> <span class="mh">0x8000000</span>
+</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">text</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x759c</span> <span class="n">lma</span> <span class="mh">0x80000c0</span>
+</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">rodata</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x3b0</span> <span class="n">lma</span> <span class="mh">0x8007660</span>
+</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">ARM</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x8</span> <span class="n">lma</span> <span class="mh">0x8007a10</span>
+</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">init_array</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x8</span> <span class="n">lma</span> <span class="mh">0x8007a18</span>
+</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">fini_array</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x4</span> <span class="n">lma</span> <span class="mh">0x8007a20</span>
+</span><span class='line'><span class="n">Loading</span> <span class="n">section</span> <span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">size</span> <span class="mh">0x8b4</span> <span class="n">lma</span> <span class="mh">0x8007a24</span>
+</span><span class='line'><span class="n">Start</span> <span class="n">address</span> <span class="mh">0x8002ebc</span><span class="p">,</span> <span class="n">load</span> <span class="n">size</span> <span class="mi">33492</span>
+</span><span class='line'><span class="n">Transfer</span> <span class="nl">rate</span><span class="p">:</span> <span class="mi">22</span> <span class="n">KB</span><span class="o">/</span><span class="n">sec</span><span class="p">,</span> <span class="mi">4186</span> <span class="n">bytes</span><span class="o">/</span><span class="n">write</span><span class="p">.</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span> <span class="n">mon</span> <span class="n">reset</span> <span class="n">halt</span>
+</span><span class='line'><span class="n">target</span> <span class="nl">state</span><span class="p">:</span> <span class="n">halted</span>
+</span><span class='line'><span class="n">target</span> <span class="n">halted</span> <span class="n">due</span> <span class="n">to</span> <span class="n">debug</span><span class="o">-</span><span class="n">request</span><span class="p">,</span> <span class="n">current</span> <span class="nl">mode</span><span class="p">:</span> <span class="n">Thread</span>
+</span><span class='line'><span class="nl">xPSR</span><span class="p">:</span> <span class="mh">0xc1000000</span> <span class="nl">pc</span><span class="p">:</span> <span class="mh">0x08002ebc</span> <span class="nl">msp</span><span class="p">:</span> <span class="mh">0x20003ffc</span><span class="p">,</span> <span class="n">semihosting</span>
+</span><span class='line'><span class="p">(</span><span class="n">gdb</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Coloca un breakpoint en la linea <code>printf("fin del bucle\n\n\r");</code> y corre el programa. Podrás notar en la pantalla de <strong>GDB</strong> que nada aparece, pero si revisas la terminal en la que tienes corriendo <strong>OpenOCD</strong> podras ver la informacion enviada por <code>printf</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">Hola</span> <span class="n">semihosting</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">4</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">6</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">7</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">8</span>
+</span><span class='line'><span class="n">la</span> <span class="n">variable</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">9</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Mola bastante verdad!!!, Pero antes de que te alegres deberías observar el tamaño de tu programa. Cuando usaste <code>load</code> GDB te dio esta información.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">Start</span> <span class="n">address</span> <span class="mh">0x8002ebc</span><span class="p">,</span> <span class="n">load</span> <span class="n">size</span> <span class="mi">33492</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>33K de codigo!!!!</strong>. Oh si!.  Usar la librería estándar agrega bastante código extra a tu programa y siendo honestos la libreria estandar de <strong>C</strong> que viene con <strong>GNU ARM</strong> no es la version completa. Se usa una version reducida, especial para embedded llamada <strong>newlib</strong>. Que, ¿creias que era gratis?.</p>
+
+<h2>Usando newlib-nano</h2>
+
+<p>Se puede usar una versión reducida de la aún reducida libreria estándar que acompaña a <strong>GNU ARM</strong> la version <strong>newlib-nano</strong>, solo necesitaras pasar al compilador las siguientes opciones <code>-Os -flto -ffunction-sections -fdata-sections -fno-builtin</code> y en el linker las opciones <code>--specs=nano.specs -lc -lnosys</code>.</p>
+
+<p>Asi que  en tu makefile en GCFLAGS quedaria asi</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">CCFLAGS</span> <span class="o">=</span> <span class="err">$</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span> <span class="err">$</span><span class="p">(</span><span class="n">INCLUDES</span><span class="p">)</span> <span class="o">-</span><span class="n">Wall</span> <span class="o">-</span><span class="n">fno</span><span class="o">-</span><span class="n">common</span> <span class="o">-</span><span class="n">O0</span> <span class="o">-</span><span class="n">fomit</span><span class="o">-</span><span class="n">frame</span><span class="o">-</span><span class="n">pointer</span> <span class="o">-</span><span class="n">Wstrict</span><span class="o">-</span><span class="n">prototypes</span> <span class="o">-</span><span class="n">fverbose</span><span class="o">-</span><span class="n">asm</span> <span class="o">-</span><span class="n">Os</span> <span class="o">-</span><span class="n">flto</span> <span class="o">-</span><span class="n">ffunction</span><span class="o">-</span><span class="n">sections</span> <span class="o">-</span><span class="n">fdata</span><span class="o">-</span><span class="n">sections</span> <span class="o">-</span><span class="n">fno</span><span class="o">-</span><span class="n">builtin</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Y en LDFLAGS quedaría de este modo</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">LDFLAGS</span> <span class="o">=</span> <span class="err">$</span><span class="p">(</span><span class="n">CPU</span><span class="p">)</span> <span class="o">-</span><span class="n">Wl</span><span class="p">,</span><span class="o">--</span><span class="n">gc</span><span class="o">-</span><span class="n">sections</span> <span class="o">--</span><span class="n">specs</span><span class="o">=</span><span class="n">rdimon</span><span class="p">.</span><span class="n">specs</span> <span class="o">-</span><span class="n">lc</span> <span class="o">-</span><span class="n">lrdimon</span> <span class="o">--</span><span class="n">specs</span><span class="o">=</span><span class="n">nano</span><span class="p">.</span><span class="n">specs</span> <span class="o">-</span><span class="n">lc</span> <span class="o">-</span><span class="n">lnosys</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Vuelve a repetir el proceso anterior de compilar, conectar OpenOCD y cargar con GDB tu programa. Fijate cuando usas <code>load</code> la cantidad de codigo que en esta ocasion se carga a tu micro.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">Start</span> <span class="n">address</span> <span class="mh">0x8000b44</span><span class="p">,</span> <span class="n">load</span> <span class="n">size</span> <span class="mi">5520</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Wow!. Se redujo a tan solo 5K, una cantidad mas considerable. Pero existe un precio como la imposibilidad de manejar numeros flotantes en la funcion <code>printf</code></p>
+
+<h2>Uso de Stack y Heap</h2>
+
+<p>Bueno no solo memoria de programa se consume por la funcion printf. Tambien se consume memoria RAM, <strong>stack</strong> y <strong>heap</strong> para ser mas especificos. Abre el archivo <strong>STM32F072RB_FLASH.ld</strong> con tu editor de texto y fijate en las líneas 37 y 38</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="n">_Min_Heap_Size</span> <span class="o">=</span> <span class="mh">0x200</span><span class="p">;</span>      <span class="cm">/* required amount of heap  */</span>
+</span><span class='line'><span class="n">_Min_Stack_Size</span> <span class="o">=</span> <span class="mh">0x400</span><span class="p">;</span>     <span class="cm">/* required amount of stack */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>En este archivo se le da al stack 2k de memoria y al heap 1k. El uso de stack es muy común pues aquí es donde se almacenan las variables locales, pero a menos que se maneje memoria dinámica el valor de heap sera 0.</p>
+
+<p>En este caso el archivo linker de ejemplo que usamos por default ya trae estos valores pero cuando no los tenga y uses la librería estándar ya sabes que deberás darle un valor adecuado ( <em>como entre 1k y 2k esta bien</em> )</p>
+
+<h2>Conclusion</h2>
+
+<p>El uso de la función <code>printf</code> es muy interesante, en especial en la etapa de desarrollo de tu proyectos, se vuelve tentadora la idea de usarla para depurar tu programa y poblar el software con cientos de <code>printf</code>. Pero como ves su uso no es gratuito y solo será útil mientras tengas un debugger conectado a tu micro, una vez que lo retires no servira de nada.</p>
+
+<p>Por cierto la librería estándar no solo es la función printf, hay mucho más. Por que no vas y se lo preguntas a tu buscador favorito.</p>
+</div>
+
+
+      <footer>
+        <p class="meta text-muted">
+          
+  
+
+<span class="glyphicon glyphicon-user"></span> <span class="byline author vcard" itemprop="author" itemscope itemtype="http://schema.org/Person">Posted by <span class="fn" itemprop="name">Diego</span></span>
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-17T22:43:53-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 17<sup>th</sup>, 2014</time>
+          
+
+<span class="glyphicon glyphicon-tags"></span>&nbsp;
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/arm-tools/'>arm tools</a>
+  
+</span>
+
+
+        </p>
+        
+          <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://testDiego.github.io/blog/2014/08/17/semihosting-con-openocd/" data-via="DiegoMX84" data-counturl="http://testDiego.github.io/blog/2014/08/17/semihosting-con-openocd/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+        
+        
+          <ul class="meta text-muted pager">
+            
+            <li class="previous"><a href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/" title="Previous Post: Debugging con OpenOCD y GDB (pt II)">&laquo; Debugging con OpenOCD y GDB (pt II)</a></li>
+            
+            
+          </ul>
+        
+      </footer>
+    </article>
+    
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+      </section>
+    
+  </div>
+
+  
+  <aside class="sidebar col-md-3">
+    
+      <section class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Recent Posts</h3>
+  </div>
+  
+  <div id="recent_posts" class="list-group">
+    
+    <a class="list-group-item active" href="/blog/2014/08/17/semihosting-con-openocd/">Semihosting Con OpenOCD</a>
+    
+    <a class="list-group-item " href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Debugging Con OpenOCD Y GDB (Pt II)</a>
+    
+    <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB (Pt I)</a>
+    
+    <a class="list-group-item " href="/blog/2014/08/13/programando-con-openocd/">Programando Con OpenOCD</a>
+    
+    <a class="list-group-item " href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
+    
+  </div>
+</section>
+<section class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Categories</h3>
+  </div>
+  <div class="list-group">
+    
+    
+    <a class="list-group-item " href="/blog/categories/arm-tools/index.html">
+        <span class="badge">6</span>
+        arm tools
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/stm32f0/index.html">
+        <span class="badge">4</span>
+        stm32f0
+      </a>
+    
+  </div>
+</section>
+
+<section class="panel panel-default clearfix">
+  <div class="panel-heading">
+      <h3 class="panel-title">GitHub Repos</h3>
+  </div>
+  <div class="list-group" id="gh_repos">
+    <p class="loading">Status updating...</p>
+  </div>
+  
+    <div class="gh-profile-link pull-right text-muted">
+      <a href="https://github.com/testDiego">@testDiego</a> on GitHub
+    </div>
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'testDiego',
+            count: 2,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+    
+  </aside>
+  
+</div>
+
+        </div>
+      </div>
+    </div>
+    <footer role="contentinfo"><div class="container">
+    <p class="text-muted credits">
+  Copyright &copy; 2014 - Diego<br>
+  <small>
+      <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>,
+      <span class="credit">customized with <a href="https://github.com/kAworu/octostrap3">octostrap3</a></span>.
+  </small>
+</p>
+
+</div>
+</footer>
+    
+
+<script type="text/javascript">
+      var disqus_shortname = 'elDiego84';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://testDiego.github.io/blog/2014/08/17/semihosting-con-openocd/';
+        var disqus_url = 'http://testDiego.github.io/blog/2014/08/17/semihosting-con-openocd/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+<script src="/assets/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="/javascripts/modernizr-2.0.js"></script>
+
+
+  </body>
+</html>

@@ -120,6 +120,108 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-17T22:43:53-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 17<sup>th</sup>, 2014</time>
+        
+           | <a href="/blog/2014/08/17/semihosting-con-openocd/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/17/semihosting-con-openocd/">Comments</a>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/17/semihosting-con-openocd/" itemprop="url">Semihosting Con OpenOCD</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p>Si has tenido la oportunidad de programar en C para la computadora, entonces de seguro conocerás la función <code>printf</code>. Esta función no es ninguna instrucción de <strong>C</strong> pero si es parte de la <strong>libreria estandar de C</strong>.</p>
+
+<p>Sin entrar en mucho detalles la función <code>printf</code> nos permite por lo general mandar información por pantalla. En la computadora típicamente es el monitor.</p>
+
+<p>Cualquier compilador decente de <strong>C</strong> para cualquier plataforma, trae esta librería estándar incluida. El compilador <strong>GNU ARM</strong> no es la excepcion y podremos, en nuestro programa utilizar la función <code>printf</code>. ¿Pero como?, si nuestro micro no tiene una pantalla!!.</p>
+
+<p>Bueno nuestro micro no, pero la computadora que usamos para programar y debuggear si. Podemos usar el <strong>debugger</strong> ( <em>en el caso de la tarjeta Nucleo-f072rb es el ST-Link</em> ) para mandar la informacion de la función <code>printf</code> de nuestro programa a la pantalla de <strong>OpenOCD</strong>.</p>
+
+<p>Crearemos un nuevo proyecto con <strong>CMSIS</strong> incluido, como en el post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Llamaremos a ese proyecto <code>test_semihosting</code>, y en el archivo <code>main.c</code> escribimos lo siguiente</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='C'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">extern</span> <span class="kt">void</span> <span class="nf">initialise_monitor_handles</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">initialise_monitor_handles</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hola semihosting</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">for</span><span class="p">(;;)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="cm">/* bucle */</span>
+</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;la variable i = %d</span><span class="se">\n\r</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;fin del bucle</span><span class="se">\n\n\r</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+</div>
+  
+  
+    <footer>
+      <a class="btn btn-default" href="/blog/2014/08/17/semihosting-con-openocd/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-17T13:37:42-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 17<sup>th</sup>, 2014</time>
         
            | <a href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/#disqus_thread" itemprop="discussionUrl"
@@ -409,65 +511,6 @@
 
         </article>
       
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-          
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-10T13:30:28-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 10<sup>th</sup>, 2014</time>
-        
-           | <a href="/blog/2014/08/10/primer-programa-con-stm32f0cube/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/10/primer-programa-con-stm32f0cube/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/10/primer-programa-con-stm32f0cube/" itemprop="url">Primer Programa Con STM32F0Cube (Pt III)</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>En los dos anteriores post de la serie <strong>Primer Programa</strong> hemos estado utilizando archivos pertenecientes a la librería <strong>STM32F0Cube</strong>. Esta librería es un banco de código de funciones ya preestablecidas que nos permitirán empezar a codificar nuestras aplicaciones sin conocer tan a detalle el micro que estemos usando.</p>
-
-<p>Llegó la hora de usar a fondo y sacar provecho de esas funciones, vamos a repetir el anterior ejemplo pero esta ocasión sacando provecho a librería <strong>STM32F0Cube</strong>.</p>
-
-<p>Creamos una nueva carpeta para nuestro proyecto</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_f072_cube</span></code></pre></td></tr></table></div></figure>
-
-
-<p>De nueva cuenta deberás copiar a la carpeta de tu proyecto el archivo linker. Recuerda lo obtienes de la librería de <strong>ST</strong> en la siguiente ruta</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>STM32Cube_FW_F0_V1.0.0/Projects/STM32F072RB-Nucleo/Templates/TrueSTUDIO/STM32F072RB-Nucleo/STM32F072RB_FLASH.ld</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/10/primer-programa-con-stm32f0cube/">Read on &rarr;</a>
-    </footer>
-  
-
-
-        </article>
-      
     </div>
 
     <ul class="pager">
@@ -491,6 +534,8 @@
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/08/17/semihosting-con-openocd/">Semihosting Con OpenOCD</a>
+    
     <a class="list-group-item " href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Debugging Con OpenOCD Y GDB (Pt II)</a>
     
     <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB (Pt I)</a>
@@ -498,8 +543,6 @@
     <a class="list-group-item " href="/blog/2014/08/13/programando-con-openocd/">Programando Con OpenOCD</a>
     
     <a class="list-group-item " href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/10/primer-programa-con-stm32f0cube/">Primer Programa Con STM32F0Cube (Pt III)</a>
     
   </div>
 </section>
@@ -511,7 +554,7 @@
     
     
     <a class="list-group-item " href="/blog/categories/arm-tools/index.html">
-        <span class="badge">5</span>
+        <span class="badge">6</span>
         arm tools
       </a>
     
