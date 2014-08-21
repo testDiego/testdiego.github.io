@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Cortex-m0 | Diego Blog]]></title>
   <link href="http://testDiego.github.io/blog/categories/cortex-m0/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-21T16:42:47-07:00</updated>
+  <updated>2014-08-21T16:44:06-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -27,6 +27,9 @@
 <p>Mmmmm No. Es verdad que mayormente se prefiere crear programas en un lenguaje como <strong>C</strong>, pero el ensamblador no esta desfasado y mucho menos obsoleto. Elejimos ensamblador porque es la mejor manera de conocer el funcionamiento a detalle de la máquina que estas programando, y a mayor nivel de conocimiento, mayor de nivel de control y confiabilidad tendrán sobre tus programas.</p>
 
 <p>No voy a entrar en detalles describiendo la arquitectura del micro y como estan constituidas sus diferentes partes, para eso existe un excelente libro que lo explica a mucho mayor detalle de lo que lo haría yo. <a href="http://www.amazon.com/The-Definitive-Guide-ARM-Cortex-M0/dp/0123854776/ref=sr_1_2?ie=UTF8&amp;qid=1408658409&amp;sr=8-2&amp;keywords=the+definitive+guide+to+cortex"><strong>The Definitive Guide to the ARM Cortex-M0</strong></a>.</p>
+
+<!--more-->
+
 
 <p>Sin mas preambulos, crea una nueva carpeta que albergará tu proyecto y dentro de ella crea el archivo <code>test.s</code>.
 <code>
