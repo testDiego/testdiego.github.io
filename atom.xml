@@ -4,7 +4,7 @@
   <title><![CDATA[Diego Blog]]></title>
   <link href="http://testDiego.github.io/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-20T00:26:51-07:00</updated>
+  <updated>2014-08-21T16:42:47-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -12,6 +12,174 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Primer Programa en Cortex-M0]]></title>
+    <link href="http://testDiego.github.io/blog/2014/08/20/primer-programa-en-cortex-m0/"/>
+    <updated>2014-08-20T23:10:07-07:00</updated>
+    <id>http://testDiego.github.io/blog/2014/08/20/primer-programa-en-cortex-m0</id>
+    <content type="html"><![CDATA[<p>Damos inicio a un interesante viaje directo a las entrañas inhóspitas de los microcontroladores y su parte más importante, Su CPU. Que en este caso sera un <strong>Cortex-M0</strong>.</p>
+
+<p>En esta nueva serie de posts aprenderemos a programar en ensamblador un micro con un cpu <strong>Cortex-M0</strong>, como el que tiene el micro de nuestra tarjeta <strong>Nucleos-f072rb</strong>.</p>
+
+<p>Ensamblador, debes estar bromeando, eso es cosa de la prehistoria!!!!.</p>
+
+<p>Mmmmm No. Es verdad que mayormente se prefiere crear programas en un lenguaje como <strong>C</strong>, pero el ensamblador no esta desfasado y mucho menos obsoleto. Elejimos ensamblador porque es la mejor manera de conocer el funcionamiento a detalle de la máquina que estas programando, y a mayor nivel de conocimiento, mayor de nivel de control y confiabilidad tendrán sobre tus programas.</p>
+
+<p>No voy a entrar en detalles describiendo la arquitectura del micro y como estan constituidas sus diferentes partes, para eso existe un excelente libro que lo explica a mucho mayor detalle de lo que lo haría yo. <a href="http://www.amazon.com/The-Definitive-Guide-ARM-Cortex-M0/dp/0123854776/ref=sr_1_2?ie=UTF8&amp;qid=1408658409&amp;sr=8-2&amp;keywords=the+definitive+guide+to+cortex"><strong>The Definitive Guide to the ARM Cortex-M0</strong></a>.</p>
+
+<p>Sin mas preambulos, crea una nueva carpeta que albergará tu proyecto y dentro de ella crea el archivo <code>test.s</code>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/test_asm
+</span><span class='line'>$ touch ~/test_asm/test.s
+</span><span class='line'>$ cd ~/test_asm</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Abre el archivo <code>test.s</code> con tu editor de texto favorito y escribe tu primer programa en ensamblador</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>    .text   
+</span><span class='line'>    .syntax unified
+</span><span class='line'>    .thumb
+</span><span class='line'>
+</span><span class='line'>    .global _start
+</span><span class='line'>    .type start, %function
+</span><span class='line'>
+</span><span class='line'>_start:
+</span><span class='line'>    .word       0x20003FFF /*stack pointer,   direccion 0x08000000*/
+</span><span class='line'>    .word       start      /*vector de reset, direccion 0x08000004*/
+</span><span class='line'>
+</span><span class='line'>/* Inicio del programa en la dirección 0x0800008 */
+</span><span class='line'>start:  
+</span><span class='line'>    movs        r0, #10    /*carga un 10 al registro r0*/
+</span><span class='line'>    movs        r1, #5     /*carga un  5 al registro r1*/
+</span><span class='line'>    
+</span><span class='line'>deadloop:   
+</span><span class='line'>    b           deadloop
+</span><span class='line'>
+</span><span class='line'>    .end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Y aquí la explicación de lo que acabamos de escribir. Primero que nada en este archivo existen dos tipos de instrucciones, aquellas que son para el propio compilador  y aquellas que son para que las ejecute el microcontrolador. Las primeras son todas las que inician con un <strong>&ldquo;.&rdquo;</strong></p>
+
+<ul>
+<li><strong>.text</strong> esta directiva indica que inicia una región de programa que necesitara ser ensamblada ( <em>o interpretada</em> )</li>
+<li><strong>.syntax unified</strong>  indica que la sintaxis de ensamblador sera la versión unificada</li>
+<li><strong>.thumb</strong> indica que el programa usará instrucciones de tipo Thumb</li>
+<li><strong>.global</strong> permite que un símbolo o etiqueta permita ser compartida por otros archivos que compondrán tu programa</li>
+<li><strong>_start</strong> es una etiqueta muy especial y representa el punto de incio de tu programa</li>
+</ul>
+
+
+<p>Antes de continuar, es justo explicar que a partir de la etiqueta <strong>_start</strong> empezara tu programa. Con la etiqueta <strong>.word</strong> reservamos 4 direcciones de memoria para, en inicio almacenar el valor del stack pointer y después almacenar la direccion donde inciara tu programa. Que en este caso esta representado por la etiqueta <strong>start</strong>.</p>
+
+<p>Las instrucciones que componen el programa que ejecutará tu micro inician a partir de la etiqueta start. Y por último la instrucción del compilador <strong>.end</strong> indica el fin del programa.</p>
+
+<p>Bien, hora de ensamblar el programa. En tu terminal escribe.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ arm-none-eabi-as -mcpu=cortex-m0 -mthumb -o test.o test.s</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Esto generará el archivo <code>test.o</code> y con este archivo deberemos enlazar nuestro program para que se ejecute a partir de la direccion <code>0x08000000</code>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ arm-none-eabi-ld -mcpu=cortex-m0 -mthumb -Ttext=0x08000000 -o test.elf test.o</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nos conectamos a la tarjeta usando <strong>OpenOCD</strong>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nuestro programa ya esta listo para cargarse en el micro de la tarjeta <strong>Nucleos-f072rb</strong>, y para ello usaremos <strong>gdb</strong>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ arm-none-eabi-gdb test.elf</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Conectate al puerto de OpenOCD</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) target remote localhost:3333</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Cargamos el programa al micro</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) load</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Aplicamos un reset para iniciar en la primera direccion de tu programa</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) mon reset halt
+</span><span class='line'>target halted due to debug-request, current mode: Thread 
+</span><span class='line'>xPSR: 0xc1000000 pc: 0x08000008 msp: 0x20003ffc</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Tu programa esta detenido justo en la direccion <code>0x08000008</code> en la cual esta la instrucción <code>movs r0, #10</code>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p/x $pc</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ojo, que no se ha ejecutado ninguna instrucción. Vamos ejecutando el programa paso a paso, para esto solo escribe</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) step</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ya se ejecutó la primera instrucción la cual cargaba el valor 10 al registro <code>r0</code>. Revisamos, y de una vez preguntamos por el registro <code>pc</code> y observamos como avanzó dos direcciones.
+ <code>
+(gdb) p $r0
+$2 = 10
+(gdb) p/x $pc
+$3 = 0x800000a
+</code></p>
+
+<p>Vamos dando otro <code>step</code> para ejecutar la siguiente instrucción donde cargamos el valor <strong>5</strong> al registro <code>r1</code>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p $r1
+</span><span class='line'>$4 = 5
+</span><span class='line'>(gdb) p/x $pc
+</span><span class='line'>$5 = 0x800000a</span></code></pre></td></tr></table></div></figure>
+
+
+<p>La última parte del programa es tan solo un bucle infinito en el que se queda clavado nuestro micro. Podemos considerar que ya se acabo nuestro primer programa.</p>
+
+<p><code>q</code> para salir de <strong>gdb</strong> y un <code>Ctrl+c</code> para salir de <strong>OpenOCD</strong></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Semihosting Con OpenOCD]]></title>

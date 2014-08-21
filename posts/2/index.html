@@ -120,6 +120,85 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-11T21:13:25-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 11<sup>th</sup>, 2014</time>
+        
+           | <a href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Comments</a>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/" itemprop="url">Primer Programa Con Stm32f0cube (Pt IV)</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p>La última parte de la serie <strong>Primer Programa</strong> en la cual abordaremos un poco más de la librería <strong>STM32F0Cube</strong>. Primero que nada una explicación de lo que contiene esta librería al descomprimir el archivo <strong>zip</strong> en el que viene, te encuentras con:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>.
+</span><span class='line'>├── Documentation
+</span><span class='line'>├── Drivers
+</span><span class='line'>├── _htmresc
+</span><span class='line'>├── Middlewares
+</span><span class='line'>├── package.xml
+</span><span class='line'>├── Projects
+</span><span class='line'>├── Release_Notes.html
+</span><span class='line'>└── Utilities</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Drivers</h4>
+
+<p>Es uno de los directorios más importantes, en el encontramos el estándar <strong>CMSIS</strong> que contiene definidos los registros de los periféricos del micro así como los vectores de interrupción. Lo otro que encontramos de gran importancia es la librería de <strong>HAL drivers</strong> con las piezas de código que nos permitirán controlar los periféricos a través de funciones y macros ya bien definidos y probados.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>.
+</span><span class='line'>├── BSP
+</span><span class='line'>├── CMSIS
+</span><span class='line'>└── STM32F0xx_HAL_Driver</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a class="btn btn-default" href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-10T13:30:28-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 10<sup>th</sup>, 2014</time>
         
            | <a href="/blog/2014/08/10/primer-programa-con-stm32f0cube/#disqus_thread" itemprop="discussionUrl"
@@ -341,70 +420,11 @@
 
         </article>
       
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-          
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-05T21:52:45-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 5<sup>th</sup>, 2014</time>
-        
-           | <a href="/blog/2014/08/05/instalando-el-compilador-gnu-arm/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/05/instalando-el-compilador-gnu-arm/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/05/instalando-el-compilador-gnu-arm/" itemprop="url">Instalando El Compilador GNU ARM</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>Vamos a empezar con nuestro primer post, y consistira en la instalacion y puesta a punto de nuestra herramienta de desarrollo favorita para microcontroladores <strong>ARM</strong>. El compilador <strong>GCC</strong> es totalemnte libre y lo mejor, no presenta limitacion alguna =).</p>
-
-<p>Primero lo primero, Deberas descargar el toolchain de su pagina oficial <a href="https://launchpad.net/gcc-arm-embedded"><strong>aqui</strong></a>. Si usas linux, como yo =) descarga el archivo <strong>Linux Installation Tarball</strong>.</p>
-
-<p>Habre la terminal y crea un nuevo folder en tu directorio de usuario. Es en este directorio donde quedara instalado nuestro compilador.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ mkdir ~/ARM</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Descomprime el archivo descargado en el directorio recien creado (sustituye las x por la version que hayas descargado).</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ tar -xvjf gcc-arm-none-eabi-X_X-xxxxxx-xxxxxxxx-linux.tar.bz2 -C ~/ARM/</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/05/instalando-el-compilador-gnu-arm/">Read on &rarr;</a>
-    </footer>
-  
-
-
-        </article>
-      
     </div>
 
     <ul class="pager">
       
-        <li class="previous disabled"><a href="#">&larr;&nbsp;Older</a></li>
+        <li class="previous"><a href="/posts/3">&larr;&nbsp;Older</a></li>
       
       <li><a href="/blog/archives">Blog Archives</a></li>
       
@@ -423,6 +443,8 @@
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/08/20/primer-programa-en-cortex-m0/">Primer Programa en Cortex-M0</a>
+    
     <a class="list-group-item " href="/blog/2014/08/17/semihosting-con-openocd/">Semihosting Con OpenOCD</a>
     
     <a class="list-group-item " href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Debugging Con OpenOCD Y GDB (Pt II)</a>
@@ -430,8 +452,6 @@
     <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB (Pt I)</a>
     
     <a class="list-group-item " href="/blog/2014/08/13/programando-con-openocd/">Programando Con OpenOCD</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/">Primer Programa Con Stm32f0cube (Pt IV)</a>
     
   </div>
 </section>
@@ -451,6 +471,12 @@
     <a class="list-group-item " href="/blog/categories/stm32f0/index.html">
         <span class="badge">4</span>
         stm32f0
+      </a>
+    
+    
+    <a class="list-group-item " href="/blog/categories/cortex-m0/index.html">
+        <span class="badge">1</span>
+        cortex-m0
       </a>
     
   </div>

@@ -2,11 +2,11 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Diego Blog</title>
+  <title>Primer Programa en Cortex-M0 - Diego Blog</title>
   <meta name="author" content="Diego">
 
-  
-  
+  <meta name="description" content="Empezamos con un simple programa para el procesador cortex-m0 usando GNU ARM y OpenOCD">
+  <meta name="keywords" content="tutorial,arm,linux,microcontrollers,st,stm32f0,cortex-m0,openocd, gdb">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -14,7 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://testDiego.github.io">
+  <link rel="canonical" href="http://testDiego.github.io/blog/2014/08/20/primer-programa-en-cortex-m0">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="Diego Blog" type="application/atom+xml">
 
@@ -94,16 +94,12 @@
       <div id="main" class="container">
         <div id="content">
           <div class="row">
-  <div class="page-content col-md-9">
-    <div class="blog-index" itemscope itemtype="http://schema.org/Blog">
+  <div class="page-content col-md-9" itemscope itemtype="http://schema.org/Blog">
     <meta itemprop="name" content="Diego Blog" />
     <meta itemprop="description" content="Este blog esta dedicado a micros ARM mas concretamente del fabricante ST. Principalmente a la programacion en ambientes linux mediante herrameintas open source" />
     <meta itemprop="url" content="http://testDiego.github.io" />
+    <article class="hentry" role="article" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
       
-      
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-          
   <header class="page-header">
     
       <p class="meta text-muted text-uppercase">
@@ -122,18 +118,21 @@
 
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-20T23:10:07-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 20<sup>th</sup>, 2014</time>
         
-           | <a href="/blog/2014/08/20/primer-programa-en-cortex-m0/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/20/primer-programa-en-cortex-m0/">Comments</a>
+           | <a href="#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io">Comments</a>
         
       </p>
     
     
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/20/primer-programa-en-cortex-m0/" itemprop="url">Primer Programa en Cortex-M0</a></h1>
+    <h1 class="entry-title" itemprop="name headline">
+        Primer Programa en Cortex-M0
+        
+    </h1>
     
   </header>
 
 
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>Damos inicio a un interesante viaje directo a las entrañas inhóspitas de los microcontroladores y su parte más importante, Su CPU. Que en este caso sera un <strong>Cortex-M0</strong>.</p>
+<div class="entry-content clearfix" itemprop="articleBody"><p>Damos inicio a un interesante viaje directo a las entrañas inhóspitas de los microcontroladores y su parte más importante, Su CPU. Que en este caso sera un <strong>Cortex-M0</strong>.</p>
 
 <p>En esta nueva serie de posts aprenderemos a programar en ensamblador un micro con un cpu <strong>Cortex-M0</strong>, como el que tiene el micro de nuestra tarjeta <strong>Nucleos-f072rb</strong>.</p>
 
@@ -294,72 +293,16 @@ $3 = 0x800000a
 
 <p><code>q</code> para salir de <strong>gdb</strong> y un <code>Ctrl+c</code> para salir de <strong>OpenOCD</strong></p>
 </div>
-  
-  
 
 
-        </article>
-      
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+      <footer>
+        <p class="meta text-muted">
           
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-17T22:43:53-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 17<sup>th</sup>, 2014</time>
-        
-           | <a href="/blog/2014/08/17/semihosting-con-openocd/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/17/semihosting-con-openocd/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/17/semihosting-con-openocd/" itemprop="url">Semihosting Con OpenOCD</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>Si has tenido la oportunidad de programar en C para la computadora, entonces de seguro conocerás la función <code>printf</code>. Esta función no es ninguna instrucción de <strong>C</strong> pero si es parte de la <strong>libreria estandar de C</strong>.</p>
-
-<p>Sin entrar en mucho detalles la función <code>printf</code> nos permite por lo general mandar información por pantalla. En la computadora típicamente es el monitor.</p>
-
-<p>Cualquier compilador decente de <strong>C</strong> para cualquier plataforma, trae esta librería estándar incluida. El compilador <strong>GNU ARM</strong> no es la excepcion y podremos, en nuestro programa utilizar la función <code>printf</code>. ¿Pero como?, si nuestro micro no tiene una pantalla!!.</p>
-
-<p>Bueno nuestro micro no, pero la computadora que usamos para programar y debuggear si. Podemos usar el <strong>debugger</strong> ( <em>en el caso de la tarjeta Nucleo-f072rb es el ST-Link</em> ) para mandar la informacion de la función <code>printf</code> de nuestro programa a la pantalla de <strong>OpenOCD</strong>.</p>
-
-<p>Crearemos un nuevo proyecto con <strong>CMSIS</strong> incluido, como en el post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Llamaremos a ese proyecto <code>test_semihosting</code>, y en el archivo <code>main.c</code> escribimos lo siguiente</p>
-
-</div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/17/semihosting-con-openocd/">Read on &rarr;</a>
-    </footer>
   
 
+<span class="glyphicon glyphicon-user"></span> <span class="byline author vcard" itemprop="author" itemscope itemtype="http://schema.org/Person">Posted by <span class="fn" itemprop="name">Diego</span></span>
 
-        </article>
-      
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
           
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
 
 
 
@@ -372,240 +315,60 @@ $3 = 0x800000a
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-17T13:37:42-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 17<sup>th</sup>, 2014</time>
-        
-           | <a href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/" itemprop="url">Debugging Con OpenOCD Y GDB (Pt II)</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>Continuamos con <strong>GDB</strong> y en esta ocasion veremos como observar el contenido de las variables y de los registros. Seguiremos retomando el programa que usamos en la <a href="http://localhost:4000/blog/2014/08/17/debugging-con-openocd-y-gdb/"><strong>primera parte</strong></a>.</p>
-
-<p>Lo primero que haremos sera modificar un poco nuestro prgrama, agregaremos unas variables que seran las que observemos. Abre el archivo <code>main.c</code> con tu editor favorito y modificalo de la siguiete manera</p>
-
-<figure class='code panel panel-default'><figcaption class='panel-heading'><h3 class='panel-title'>main.c </h3></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &quot;stm32f072xb.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define LED_PIN 5</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">uno</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/*variable iniciada a cero*/</span>
-</span><span class='line'><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">dos</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="cm">/*variable iniciada a dos*/</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span> <span class="p">(</span> <span class="kt">void</span> <span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">volatile</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">tres</span><span class="p">;</span>  <span class="cm">/*variable con valor incial indeterminado*/</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/* Enable GPIOA clock */</span>
-</span><span class='line'>    <span class="n">RCC</span><span class="o">-&gt;</span><span class="n">AHBENR</span> <span class="o">|=</span> <span class="n">RCC_AHBENR_GPIOAEN</span><span class="p">;</span>
-</span><span class='line'>    <span class="cm">/* Configure GPIOA pin 5 as output */</span>
-</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">MODER</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
-</span><span class='line'>    <span class="cm">/* Configure GPIOA pin 5 in max speed */</span>
-</span><span class='line'>    <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">OSPEEDR</span> <span class="o">|=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">LED_PIN</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">));</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">for</span><span class="p">(;;)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="cm">/* Toggle pin 5 from port A */</span>
-</span><span class='line'>        <span class="n">GPIOA</span><span class="o">-&gt;</span><span class="n">ODR</span> <span class="o">^=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">LED_PIN</span><span class="p">);</span>
-</span><span class='line'>        <span class="cm">/*incrementamos variables de prueba*/</span>
-</span><span class='line'>        <span class="n">uno</span><span class="o">++</span><span class="p">;</span>     <span class="cm">/*incremento en uno*/</span>
-</span><span class='line'>        <span class="n">dos</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span>  <span class="cm">/*incremento en dos*/</span>
-</span><span class='line'>        <span class="n">tres</span><span class="o">++</span><span class="p">;</span>    <span class="cm">/*incremnteo en uno*/</span>
-</span><span class='line'>        <span class="cm">/* simple and practical delay */</span>
-</span><span class='line'>        <span class="k">for</span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">300000</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-</div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Read on &rarr;</a>
-    </footer>
-  
-
-
-        </article>
-      
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-20T23:10:07-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 20<sup>th</sup>, 2014</time>
           
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
+
+<span class="glyphicon glyphicon-tags"></span>&nbsp;
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/cortex-m0/'>cortex-m0</a>
+  
+</span>
+
+
+        </p>
         
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-14T23:12:51-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 14<sup>th</sup>, 2014</time>
-        
-           | <a href="/blog/2014/08/14/debugging-con-openocd-y-gdb/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/14/debugging-con-openocd-y-gdb/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/14/debugging-con-openocd-y-gdb/" itemprop="url">Debugging Con OpenOCD Y GDB (Pt I)</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>Llegó el momento de sacar mayor provecho al programador de nuestra tarjeta y es que nos solo sirve para programar. <strong>ST-Link</strong> nos sirve para depurar nuestro programa, realizar cosas como ejecuciones paso a paso, colocar breakpoints, revisar el contenido de una variable o registro, etc.</p>
-
-<p>Antes de empezar deberemos tener un proyecto con el cual trabajar, así que tomaremos el proyecto del post <a href="http://testdiego.github.io/blog/2014/08/08/primer-programa-cmsis/"><strong>Primer Programa con CMSIS</strong></a>. Asegúrate de que compile sin errores ( <em>puedes probarlo antes en la tarjeta</em> ).</p>
-
-<p>Bien, hora de conectarse a nuestra <strong>Nucleo-f072</strong> usando <strong>OpenOCD</strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en la carpeta del proyecto
-</span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
-
-
+          <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://testDiego.github.io/blog/2014/08/20/primer-programa-en-cortex-m0/" data-via="DiegoMX84" data-counturl="http://testDiego.github.io/blog/2014/08/20/primer-programa-en-cortex-m0/" >Tweet</a>
+  
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
 </div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Read on &rarr;</a>
-    </footer>
-  
 
-
-        </article>
-      
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-          
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
         
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-13T20:39:06-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 13<sup>th</sup>, 2014</time>
         
-           | <a href="/blog/2014/08/13/programando-con-openocd/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/13/programando-con-openocd/">Comments</a>
+          <ul class="meta text-muted pager">
+            
+            <li class="previous"><a href="/blog/2014/08/17/semihosting-con-openocd/" title="Previous Post: Semihosting con OpenOCD">&laquo; Semihosting con OpenOCD</a></li>
+            
+            
+          </ul>
         
-      </p>
+      </footer>
+    </article>
     
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/13/programando-con-openocd/" itemprop="url">Programando Con OpenOCD</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>Existen diferentes maneras en que podemos programar nuestro microcontrolador usando <strong>OpenOCD</strong>, ( <em>una muestra de su versatilidad</em> ), y en este nuevo post examinaremos algunas de ellas, quedara en ti escoger la más adecuada para tu sistema de trabajo.</p>
-
-<p>Antes que nada y para simplificar un poco utilizaremos el programa que creamos en el post <a href="http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board"><strong>Primer Programa Bare Board</strong></a> y daremos por echo que ya esta correctamente compilado y tenemos los archivos tets.elf y test.hex generados en el subfolder Output.</p>
-
-<h2>Usando Telnet</h2>
-
-<p>Esta opción ya la hemos manejado en los anteriores post, pero no está de más incluirla aquí. Primero que nada tendrás que conectarte a tu tarjeta con <strong>OpenOCD</strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en alcarpeta del proyecto
-</span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
-
-
+      <section>
+        <h1>Comments</h1>
+        <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/13/programando-con-openocd/">Read on &rarr;</a>
-    </footer>
-  
-
-
-        </article>
-      
-    </div>
-
-    <ul class="pager">
-      
-        <li class="previous"><a href="/posts/2">&larr;&nbsp;Older</a></li>
-      
-      <li><a href="/blog/archives">Blog Archives</a></li>
-      
-        <li class="next disabled"><a href="#">Newer&nbsp;&rarr;</a></li>
-      
-    </ul>
+      </section>
+    
   </div>
 
   
-    <aside class="sidebar col-md-3">
-      
-        <section class="panel panel-default">
+  <aside class="sidebar col-md-3">
+    
+      <section class="panel panel-default">
   <div class="panel-heading">
     <h3 class="panel-title">Recent Posts</h3>
   </div>
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2014/08/20/primer-programa-en-cortex-m0/">Primer Programa en Cortex-M0</a>
+    <a class="list-group-item active" href="/blog/2014/08/20/primer-programa-en-cortex-m0/">Primer Programa en Cortex-M0</a>
     
     <a class="list-group-item " href="/blog/2014/08/17/semihosting-con-openocd/">Semihosting Con OpenOCD</a>
     
@@ -649,7 +412,7 @@ $3 = 0x800000a
       <h3 class="panel-title">GitHub Repos</h3>
   </div>
   <div class="list-group" id="gh_repos">
-    <p class="loading">Status updating&#8230;</p>
+    <p class="loading">Status updating...</p>
   </div>
   
     <div class="gh-profile-link pull-right text-muted">
@@ -678,8 +441,8 @@ $3 = 0x800000a
 </section>
 
 
-      
-    </aside>
+    
+  </aside>
   
 </div>
 
@@ -703,7 +466,10 @@ $3 = 0x800000a
       var disqus_shortname = 'elDiego84';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://testDiego.github.io/blog/2014/08/20/primer-programa-en-cortex-m0/';
+        var disqus_url = 'http://testDiego.github.io/blog/2014/08/20/primer-programa-en-cortex-m0/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
