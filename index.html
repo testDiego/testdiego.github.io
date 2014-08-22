@@ -120,6 +120,55 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-21T17:31:41-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 21<sup>st</sup>, 2014</time>
+        
+           | <a href="/blog/2014/08/21/comandos-de-gdb/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/21/comandos-de-gdb/">Comments</a>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/21/comandos-de-gdb/" itemprop="url">Comandos De GDB</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p>En anteriores post referentes al uso de <a href="http://testdiego.github.io/blog/2014/08/13/programando-con-openocd/"><strong>OpenOCD</strong></a> nos dimos cuenta, que en lugar de pasar comandos al momento de invocarlo en la terminal, decidimos crear un archivo especial con terminacion <code>.cfg</code> que contenia dichos comandos y de esa manera nos ahorraria tener que esribirlos continuamente.</p>
+
+<p>Bueno pues con el uso de <strong>gdb</strong> es probable que tambien hayas notado el uso de ciertos comandos que repetimos en cada proyecto y muy probablemente te estes preguntando si se podra haser lo mismo que con <strong>OpenOCD </strong> y de ese modo evitar la fatiga.</p>
+
+<p>Recordemos un poco el anterior post de <a href="http://testdiego.github.io/blog/2014/08/17/semihosting-con-openocd/"><strong>Semihosting</strong></a>. Una vez ya compilado nuestro programa y conectados a la tarjeta con <strong>OpenOCD</strong>, era el turno de <strong>gdb</strong>.</p>
+
+</div>
+  
+  
+    <footer>
+      <a class="btn btn-default" href="/blog/2014/08/21/comandos-de-gdb/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-20T23:10:07-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 20<sup>th</sup>, 2014</time>
         
            | <a href="/blog/2014/08/20/primer-programa-en-cortex-m0/#disqus_thread" itemprop="discussionUrl"
@@ -379,63 +428,6 @@
 
         </article>
       
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-          
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-13T20:39:06-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 13<sup>th</sup>, 2014</time>
-        
-           | <a href="/blog/2014/08/13/programando-con-openocd/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/13/programando-con-openocd/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/13/programando-con-openocd/" itemprop="url">Programando Con OpenOCD</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>Existen diferentes maneras en que podemos programar nuestro microcontrolador usando <strong>OpenOCD</strong>, ( <em>una muestra de su versatilidad</em> ), y en este nuevo post examinaremos algunas de ellas, quedara en ti escoger la más adecuada para tu sistema de trabajo.</p>
-
-<p>Antes que nada y para simplificar un poco utilizaremos el programa que creamos en el post <a href="http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board"><strong>Primer Programa Bare Board</strong></a> y daremos por echo que ya esta correctamente compilado y tenemos los archivos tets.elf y test.hex generados en el subfolder Output.</p>
-
-<h2>Usando Telnet</h2>
-
-<p>Esta opción ya la hemos manejado en los anteriores post, pero no está de más incluirla aquí. Primero que nada tendrás que conectarte a tu tarjeta con <strong>OpenOCD</strong></p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en alcarpeta del proyecto
-</span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/13/programando-con-openocd/">Read on &rarr;</a>
-    </footer>
-  
-
-
-        </article>
-      
     </div>
 
     <ul class="pager">
@@ -459,6 +451,8 @@
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/08/21/comandos-de-gdb/">Comandos De GDB</a>
+    
     <a class="list-group-item " href="/blog/2014/08/20/primer-programa-en-cortex-m0/">Primer Programa en Cortex-M0</a>
     
     <a class="list-group-item " href="/blog/2014/08/17/semihosting-con-openocd/">Semihosting Con OpenOCD</a>
@@ -466,8 +460,6 @@
     <a class="list-group-item " href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Debugging Con OpenOCD Y GDB (Pt II)</a>
     
     <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB (Pt I)</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/13/programando-con-openocd/">Programando Con OpenOCD</a>
     
   </div>
 </section>
@@ -479,7 +471,7 @@
     
     
     <a class="list-group-item " href="/blog/categories/arm-tools/index.html">
-        <span class="badge">6</span>
+        <span class="badge">7</span>
         arm tools
       </a>
     

@@ -120,6 +120,63 @@
 
 
 
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-13T20:39:06-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 13<sup>th</sup>, 2014</time>
+        
+           | <a href="/blog/2014/08/13/programando-con-openocd/#disqus_thread" itemprop="discussionUrl"
+             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/13/programando-con-openocd/">Comments</a>
+        
+      </p>
+    
+    
+      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/13/programando-con-openocd/" itemprop="url">Programando Con OpenOCD</a></h1>
+    
+  </header>
+
+
+  <div class="entry-content clearfix" itemprop="articleBody description"><p>Existen diferentes maneras en que podemos programar nuestro microcontrolador usando <strong>OpenOCD</strong>, ( <em>una muestra de su versatilidad</em> ), y en este nuevo post examinaremos algunas de ellas, quedara en ti escoger la más adecuada para tu sistema de trabajo.</p>
+
+<p>Antes que nada y para simplificar un poco utilizaremos el programa que creamos en el post <a href="http://testdiego.github.io/blog/2014/08/06/primer-programa-bare-board"><strong>Primer Programa Bare Board</strong></a> y daremos por echo que ya esta correctamente compilado y tenemos los archivos tets.elf y test.hex generados en el subfolder Output.</p>
+
+<h2>Usando Telnet</h2>
+
+<p>Esta opción ya la hemos manejado en los anteriores post, pero no está de más incluirla aquí. Primero que nada tendrás que conectarte a tu tarjeta con <strong>OpenOCD</strong></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd ~/test_f072 #recuerda que debemos estar en alcarpeta del proyecto
+</span><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
+
+
+</div>
+  
+  
+    <footer>
+      <a class="btn btn-default" href="/blog/2014/08/13/programando-con-openocd/">Read on &rarr;</a>
+    </footer>
+  
+
+
+        </article>
+      
+      
+        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
+          
+  <header class="page-header">
+    
+      <p class="meta text-muted text-uppercase">
+        
+
+
+
+
+
+
+
+
+
+
+
+
 <span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-11T21:13:25-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 11<sup>th</sup>, 2014</time>
         
            | <a href="/blog/2014/08/11/primer-programa-con-stm32f0cube-ii/#disqus_thread" itemprop="discussionUrl"
@@ -361,65 +418,6 @@
 
         </article>
       
-      
-        <article class="post" itemprop="blogPost" itemscope itemtype="http://schema.org/BlogPosting">
-          
-  <header class="page-header">
-    
-      <p class="meta text-muted text-uppercase">
-        
-
-
-
-
-
-
-
-
-
-
-
-
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-06T11:54:37-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 6<sup>th</sup>, 2014</time>
-        
-           | <a href="/blog/2014/08/06/instalando-openocd/#disqus_thread" itemprop="discussionUrl"
-             data-disqus-identifier="http://testDiego.github.io/blog/2014/08/06/instalando-openocd/">Comments</a>
-        
-      </p>
-    
-    
-      <h1 class="entry-title" itemprop="name headline"><a href="/blog/2014/08/06/instalando-openocd/" itemprop="url">Instalando OpenOCD</a></h1>
-    
-  </header>
-
-
-  <div class="entry-content clearfix" itemprop="articleBody description"><p>Ya con el compilador instalado, deberemos instalar un programa que nos permita comunicarnos con nuestro hardware y programarlo. Para ello usaremos <strong>OpenOCD</strong>, el cual es un pequeño servidor que se conectará con nuestro programador/debugger y nos permitirá pasar a nuestro micro el programa ya compilado.</p>
-
-<p><strong>NOTA</strong> Necesitamos instalar unas pequeñas librerias a manera de prerequisito (drivers USB). En Ubuntu escribe</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo apt-get install libftdi-dev libusb-1.0-0-dev</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>OpenOCD</strong> es un software totalmente libre y en constante actualización, descarga la versión <strong>0.8.0</strong> de <a href="http://sourceforge.net/projects/openocd/files/openocd/0.8.0/"><strong>Aquí</strong></a>.</p>
-
-<p>Descomprime el archivo descargado con el siguiente comando en la terminal.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ tar xvjf openocd-0.8.0.tar.bz2</span></code></pre></td></tr></table></div></figure>
-
-
-</div>
-  
-  
-    <footer>
-      <a class="btn btn-default" href="/blog/2014/08/06/instalando-openocd/">Read on &rarr;</a>
-    </footer>
-  
-
-
-        </article>
-      
     </div>
 
     <ul class="pager">
@@ -443,6 +441,8 @@
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/08/21/comandos-de-gdb/">Comandos De GDB</a>
+    
     <a class="list-group-item " href="/blog/2014/08/20/primer-programa-en-cortex-m0/">Primer Programa en Cortex-M0</a>
     
     <a class="list-group-item " href="/blog/2014/08/17/semihosting-con-openocd/">Semihosting Con OpenOCD</a>
@@ -450,8 +450,6 @@
     <a class="list-group-item " href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Debugging Con OpenOCD Y GDB (Pt II)</a>
     
     <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB (Pt I)</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/13/programando-con-openocd/">Programando Con OpenOCD</a>
     
   </div>
 </section>
@@ -463,7 +461,7 @@
     
     
     <a class="list-group-item " href="/blog/categories/arm-tools/index.html">
-        <span class="badge">6</span>
+        <span class="badge">7</span>
         arm tools
       </a>
     

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Cortex-m0 | Diego Blog]]></title>
   <link href="http://testDiego.github.io/blog/categories/cortex-m0/atom.xml" rel="self"/>
   <link href="http://testDiego.github.io/"/>
-  <updated>2014-08-21T16:44:06-07:00</updated>
+  <updated>2014-08-22T12:49:27-07:00</updated>
   <id>http://testDiego.github.io/</id>
   <author>
     <name><![CDATA[Diego]]></name>
@@ -79,12 +79,12 @@ Las instrucciones que componen el programa que ejecutará tu micro inician a par
 Bien, hora de ensamblar el programa. En tu terminal escribe.
 </code></pre>
 
-<p>$ arm-none-eabi-as -mcpu=cortex-m0 -mthumb -o test.o test.s
+<p>$ arm-none-eabi-as -mcpu=cortex-m0 -mthumb -g -o test.o test.s
 &#8220;`</p>
 
 <p>Esto generará el archivo <code>test.o</code> y con este archivo deberemos enlazar nuestro program para que se ejecute a partir de la direccion <code>0x08000000</code>.
 <code>
-$ arm-none-eabi-ld -mcpu=cortex-m0 -mthumb -Ttext=0x08000000 -o test.elf test.o
+$ arm-none-eabi-ld -Ttext=0x08000000 -o test.elf test.o
 </code></p>
 
 <p>Nos conectamos a la tarjeta usando <strong>OpenOCD</strong>.

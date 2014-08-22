@@ -217,13 +217,13 @@
 <p>Bien, hora de ensamblar el programa. En tu terminal escribe.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ arm-none-eabi-as -mcpu=cortex-m0 -mthumb -o test.o test.s</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ arm-none-eabi-as -mcpu=cortex-m0 -mthumb -g -o test.o test.s</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Esto generará el archivo <code>test.o</code> y con este archivo deberemos enlazar nuestro program para que se ejecute a partir de la direccion <code>0x08000000</code>.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ arm-none-eabi-ld -mcpu=cortex-m0 -mthumb -Ttext=0x08000000 -o test.elf test.o</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ arm-none-eabi-ld -Ttext=0x08000000 -o test.elf test.o</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Nos conectamos a la tarjeta usando <strong>OpenOCD</strong>.</p>
@@ -348,6 +348,8 @@ $3 = 0x800000a
             <li class="previous"><a href="/blog/2014/08/17/semihosting-con-openocd/" title="Previous Post: Semihosting con OpenOCD">&laquo; Semihosting con OpenOCD</a></li>
             
             
+            <li class="next"><a href="/blog/2014/08/21/comandos-de-gdb/" title="Next Post: Comandos de GDB">Comandos de GDB &raquo;</a></li>
+            
           </ul>
         
       </footer>
@@ -371,6 +373,8 @@ $3 = 0x800000a
   
   <div id="recent_posts" class="list-group">
     
+    <a class="list-group-item " href="/blog/2014/08/21/comandos-de-gdb/">Comandos De GDB</a>
+    
     <a class="list-group-item active" href="/blog/2014/08/20/primer-programa-en-cortex-m0/">Primer Programa en Cortex-M0</a>
     
     <a class="list-group-item " href="/blog/2014/08/17/semihosting-con-openocd/">Semihosting Con OpenOCD</a>
@@ -378,8 +382,6 @@ $3 = 0x800000a
     <a class="list-group-item " href="/blog/2014/08/17/debugging-con-openocd-y-gdb-pt-ii/">Debugging Con OpenOCD Y GDB (Pt II)</a>
     
     <a class="list-group-item " href="/blog/2014/08/14/debugging-con-openocd-y-gdb/">Debugging Con OpenOCD Y GDB (Pt I)</a>
-    
-    <a class="list-group-item " href="/blog/2014/08/13/programando-con-openocd/">Programando Con OpenOCD</a>
     
   </div>
 </section>
@@ -391,7 +393,7 @@ $3 = 0x800000a
     
     
     <a class="list-group-item " href="/blog/categories/arm-tools/index.html">
-        <span class="badge">6</span>
+        <span class="badge">7</span>
         arm tools
       </a>
     

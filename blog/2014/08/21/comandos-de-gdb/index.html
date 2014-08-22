@@ -2,11 +2,11 @@
 <html class="no-js" lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Instalando OpenOCD - Diego Blog</title>
+  <title>Comandos De GDB - Diego Blog</title>
   <meta name="author" content="Diego">
 
-  <meta name="description" content="Tutorial para compilar, cofigurar e instalar OpenOCD en linux con soporte para jlink, ftdi y stlink">
-  <meta name="keywords" content="tutorial,openocd,gnu,arm,linux">
+  <meta name="description" content="Como utilizar los comandos de GDB de una manera mas sencilla utlizando archivos .gdb">
+  <meta name="keywords" content="tutorial,arm,linux,microcontrollers,st,stm32f0,cortex-m0,openocd, gdb">
 
   <!-- http://t.co/dKP3o1e -->
   <meta name="HandheldFriendly" content="True">
@@ -14,7 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://testDiego.github.io/blog/2014/08/06/instalando-openocd">
+  <link rel="canonical" href="http://testDiego.github.io/blog/2014/08/21/comandos-de-gdb">
   <link href="/favicon.png" type="image/png" rel="icon">
   <link href="/atom.xml" rel="alternate" title="Diego Blog" type="application/atom+xml">
 
@@ -116,7 +116,7 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-06T11:54:37-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 6<sup>th</sup>, 2014</time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-21T17:31:41-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 21<sup>st</sup>, 2014</time>
         
            | <a href="#disqus_thread" itemprop="discussionUrl"
              data-disqus-identifier="http://testDiego.github.io">Comments</a>
@@ -125,86 +125,39 @@
     
     
     <h1 class="entry-title" itemprop="name headline">
-        Instalando OpenOCD
+        Comandos De GDB
         
     </h1>
     
   </header>
 
 
-<div class="entry-content clearfix" itemprop="articleBody"><p>Ya con el compilador instalado, deberemos instalar un programa que nos permita comunicarnos con nuestro hardware y programarlo. Para ello usaremos <strong>OpenOCD</strong>, el cual es un pequeño servidor que se conectará con nuestro programador/debugger y nos permitirá pasar a nuestro micro el programa ya compilado.</p>
+<div class="entry-content clearfix" itemprop="articleBody"><p>En anteriores post referentes al uso de <a href="http://testdiego.github.io/blog/2014/08/13/programando-con-openocd/"><strong>OpenOCD</strong></a> nos dimos cuenta, que en lugar de pasar comandos al momento de invocarlo en la terminal, decidimos crear un archivo especial con terminacion <code>.cfg</code> que contenia dichos comandos y de esa manera nos ahorraria tener que esribirlos continuamente.</p>
 
-<p><strong>NOTA</strong> Necesitamos instalar unas pequeñas librerias a manera de prerequisito (drivers USB). En Ubuntu escribe</p>
+<p>Bueno pues con el uso de <strong>gdb</strong> es probable que tambien hayas notado el uso de ciertos comandos que repetimos en cada proyecto y muy probablemente te estes preguntando si se podra haser lo mismo que con <strong>OpenOCD </strong> y de ese modo evitar la fatiga.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo apt-get install libftdi-dev libusb-1.0-0-dev</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>OpenOCD</strong> es un software totalmente libre y en constante actualización, descarga la versión <strong>0.8.0</strong> de <a href="http://sourceforge.net/projects/openocd/files/openocd/0.8.0/"><strong>Aquí</strong></a>.</p>
-
-<p>Descomprime el archivo descargado con el siguiente comando en la terminal.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ tar xvjf openocd-0.8.0.tar.bz2</span></code></pre></td></tr></table></div></figure>
-
+<p>Recordemos un poco el anterior post de <a href="http://testdiego.github.io/blog/2014/08/17/semihosting-con-openocd/"><strong>Semihosting</strong></a>. Una vez ya compilado nuestro programa y conectados a la tarjeta con <strong>OpenOCD</strong>, era el turno de <strong>gdb</strong>.</p>
 
 <!--more-->
 
 
-<p><strong>OpenOCD</strong> se distribuye usando sus archivos fuente, así que antes de ejecutarlo debemos compilarlo y despues instalarlo. No te preocupes son pasos muy sencillos.</p>
-
-<p>Primero pasate a la carpeta de OpenOCD ya descomprimido</p>
+<p>Una manera alterna que pudimos aver empleado al momento de invocar <strong>gdb</strong> fue la siguiente</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd openocd-0.8.0 </span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>arm-none-eabi-gdb -ex "target remote localhost:3333" -ex "mon arm semihosting enable" -ex "mon reset halt" Output/test.elf</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Ahora lo configuraremos para que trabaje con ciertos debuggers, como <strong>jlink</strong>, <strong>ftdi</strong> y <strong>stlink</strong> ( <em>que es el que usaremos nosotros</em> )</p>
+<p>Como puedes ver en lugar de escribir los comandos una vez inciado <strong>gdb</strong>, aqui lo estamos haciendo al momento de invocarlo en la terminal, y para ello cada comando lo agregamos con la bandera <code>-ex</code></p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ ./configure --enable-stlink --enable-jlink --enable-ftdi</span></code></pre></td></tr></table></div></figure>
+<p>Creo que no es tan flexible de esta otra manera. Ahora tenemos otra cadena kilometrica que escribir cada que invoquemos <strong>gdb</strong>.</p>
 
-
-<p>Compilamos</p>
+<p>Afortunadamente la solucion que se ejecuto con <strong>OpenOCD</strong> es tambien la que usaremos con <strong>gdb</strong>. crea un nuevo archivo con extension <code>.gdb</code>. En la carpeta de tu proyecto por supuesto.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ make</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ touch commands.gdb</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Por último instalamos</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo make install</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>OpenOCD</strong> quedó instalado en dos diferentes folders de nuestro sistema linux, el ejecutable ( <em>binario</em> ) quedará en el directorio <code>/usr/local/bin</code>.</p>
-
-<p>La otra carpeta importante <code>/usr/local/share/openocd/scripts</code> es donde quedarán instalados los scripts que nos servirán para identificar el micro que queremos programar y contiene la información necesaria para decirle a <strong>OpenOCD</strong> como programarlo, estos scripts están agrupados en tres niveles:</p>
-
-<ul>
-<li><strong>target.-</strong> scripts con instrucciones especificas para microcontroladores/procesadores</li>
-<li><strong>interface.-</strong> scripts con la informacion del debugger/programador a usar</li>
-<li><strong>board.-</strong> scripts con instrucciones que combinan interface y target. Y pertenecen a tarjetas especifcas que ya estan en el mercado</li>
-</ul>
-
-
-<p>Antes de prenderle fuego a tu board ( <em>conectarla a OpenOCD</em> ) deberemos registrar ciertas reglas, para que el debugger ( <em>ST-Link-V2-1</em> ) sea reconocido por nuestro sistema. Para no entrar mas en detallas simplemente ejecuta lo siguietne en la terminal.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo cp  /usr/local/share/openocd/contrib/openocd.udev  /etc/udev/rules.d/98-openocd.rules
-</span><span class='line'>$ sudo udevadm control --reload-rules</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Bueno basta de Charla, hay que probar si realmente funciona. Para ello usaremos nuestra nueva tarjeta <strong>Nucleo-F072RB</strong> de la marca <strong>ST</strong>, el cual por cierto posee un micro con CPU <strong>Cortex-M0</strong>. Conectala al puerto USB ( <em>se abrirá una ventana, pues la PC la identificara como un mass storage, no te apures solo cierra la ventana</em> )</p>
-
-<p>En la terminal ejecuta OpenOCD de la siguiente manera.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ sudo openocd -f interface/stlink-v2-1.cfg -f target/stm32f0x_stlink.cfg</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Si todo resulto bien te aparecera la siguiente información.</p>
+<p>Abre el archivo y en el escribe los comandos que quieres que <strong>gdb</strong> ejcute cuando inciliza. que tal estos.</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -212,29 +165,41 @@
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Open On-Chip Debugger 0.8.0 (2014-08-02-17:39)
-</span><span class='line'>Licensed under GNU GPL v2
-</span><span class='line'>For bug reports, read
-</span><span class='line'>    http://openocd.sourceforge.net/doc/doxygen/bugs.html
-</span><span class='line'>Info : This adapter doesn't support configurable speed
-</span><span class='line'>Info : STLINK v2 JTAG v22 API v2 SWIM v5 VID 0x0483 PID 0x374B
-</span><span class='line'>Info : using stlink api v2
-</span><span class='line'>Info : Target voltage: 3.246689
-</span><span class='line'>Info : stm32f0x.cpu: hardware has 4 breakpoints, 2 watchpoints</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>target remote localhost:3333 # conectamos el puerto de OpenOCD
+</span><span class='line'>mon enable semihosting       # habilitamos la opcion semihosting (si se va a utilizar)
+</span><span class='line'>load                         # cargamos el programa
+</span><span class='line'>mon reset halt               # reset
+</span><span class='line'>break main                   # breakpoint en la funcion main
+</span><span class='line'>c                            # corenmos el programa y que se detenga en la funcion main</span></code></pre></td></tr></table></div></figure>
 
 
-<p>Con un <code>Ctrl+C</code> sales de openocd.</p>
+<p>Y cuando invoquemos a <strong>gdb</strong> lo haremos de la siguiente manera</p>
 
-<p>Si requieres mas informacion consulta:</p>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ arm-none-eabi-gdb Output/test.elf -x=commands.gdb</span></code></pre></td></tr></table></div></figure>
 
-<ul>
-<li><a href="openocd.org">openocd.org</a></li>
-<li><a href="http://gnuarmeclipse.livius.net/blog/openocd-install/">http://gnuarmeclipse.livius.net/blog/openocd-install/</a></li>
-</ul>
 
+<p>Mucho mejor no es asi.</p>
+
+<h2>Comandos</h2>
+
+<p>Te dire que ni siquiera has visto ni la mitad de los comandos que puedes ejecutar con <strong>gdb</strong>. Puedes echarle un ojo a esta <a href="http://linux.die.net/man/1/gdb"><strong>web</strong></a> si gustas mas informacion.</p>
+
+<p>A que no encuentras los comnados <code>mon enable semihosting</code> y <code>mon reset halt</code> en la pagina. Es porque estos comandos en realidad son especificos de OpenOCD. <strong>GDB</strong> puede ejecutar comandos pertenecientes al servidor que se esta usando, anteponiendo la palabra <code>mon</code> ( <em>de monitor mode</em> ). Puedes revisar los comandos que admite OpenOCD en la pagina 76 del manual de usuario.</p>
+
+<p>Incluso existen comandos que realizan la misma operacion. Ejemplo</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) p/x $pc</span></code></pre></td></tr></table></div></figure>
+
+
+<p>es lo mismo que</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>(gdb) mon reg pc</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Y como este ejemplo hay otros.</p>
 </div>
 
 
@@ -258,7 +223,7 @@
 
 
 
-<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-06T11:54:37-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 6<sup>th</sup>, 2014</time>
+<span class="glyphicon glyphicon-calendar"></span> <time datetime="2014-08-21T17:31:41-07:00"  data-updated="true" itemprop="datePublished dateCreated">Aug 21<sup>st</sup>, 2014</time>
           
 
 <span class="glyphicon glyphicon-tags"></span>&nbsp;
@@ -273,7 +238,7 @@
         
           <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://testDiego.github.io/blog/2014/08/06/instalando-openocd/" data-via="DiegoMX84" data-counturl="http://testDiego.github.io/blog/2014/08/06/instalando-openocd/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://testDiego.github.io/blog/2014/08/21/comandos-de-gdb/" data-via="DiegoMX84" data-counturl="http://testDiego.github.io/blog/2014/08/21/comandos-de-gdb/" >Tweet</a>
   
   
   
@@ -285,10 +250,8 @@
         
           <ul class="meta text-muted pager">
             
-            <li class="previous"><a href="/blog/2014/08/05/instalando-el-compilador-gnu-arm/" title="Previous Post: Instalando el compilador GNU ARM">&laquo; Instalando el compilador GNU ARM</a></li>
+            <li class="previous"><a href="/blog/2014/08/20/primer-programa-en-cortex-m0/" title="Previous Post: Primer Programa en Cortex-M0">&laquo; Primer Programa en Cortex-M0</a></li>
             
-            
-            <li class="next"><a href="/blog/2014/08/06/primer-programa-bare-board/" title="Next Post: Primer Programa Bare Board (pt I)">Primer Programa Bare Board (pt I) &raquo;</a></li>
             
           </ul>
         
@@ -313,7 +276,7 @@
   
   <div id="recent_posts" class="list-group">
     
-    <a class="list-group-item " href="/blog/2014/08/21/comandos-de-gdb/">Comandos De GDB</a>
+    <a class="list-group-item active" href="/blog/2014/08/21/comandos-de-gdb/">Comandos De GDB</a>
     
     <a class="list-group-item " href="/blog/2014/08/20/primer-programa-en-cortex-m0/">Primer Programa en Cortex-M0</a>
     
@@ -412,8 +375,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://testDiego.github.io/blog/2014/08/06/instalando-openocd/';
-        var disqus_url = 'http://testDiego.github.io/blog/2014/08/06/instalando-openocd/';
+        var disqus_identifier = 'http://testDiego.github.io/blog/2014/08/21/comandos-de-gdb/';
+        var disqus_url = 'http://testDiego.github.io/blog/2014/08/21/comandos-de-gdb/';
         var disqus_script = 'embed.js';
       
     (function () {
